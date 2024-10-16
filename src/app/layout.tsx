@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(openSans.className)}>9053600768{children}</body>
+      <body className={cn(openSans.className)}>{children}</body>
     </html>
   );
 }
