@@ -1,0 +1,11 @@
+- /
+- about-uS
+- course
+  - course 1
+  - course 2
+  - course 3
+  - course n
+- faq
+- contact-us
+- partnership
+- privacy-policy

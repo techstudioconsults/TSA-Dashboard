@@ -1,0 +1,326 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    /* tsa design system */
+    --white: 0, 0%, 100%;
+    --black: 222.2 84% 4.9%;
+
+    --high-blue: 235, 53%, 26%, 1;
+    --mid-blue: 215, 98%, 48%, 1;
+    --low-blue: 216, 93%, 95%, 1;
+
+    --high-danger: 353, 74%, 28%, 1;
+    --mid-danger: 353, 85%, 44%, 1;
+    --low-danger: 360, 95%, 87%, 1;
+
+    --high-warning: 38, 58%, 24%, 1;
+    --mid-warning: 38, 100%, 68%, 1;
+    --low-warning: 38, 100%, 87%, 1;
+
+    --high-success: 140, 69%, 20%, 1;
+    --mid-success: 140, 79%, 32%, 1;
+    --low-success: 140, 38%, 85%, 1;
+
+    --high-grey-III: 0, 0%, 12%, 1;
+    --mid-grey-III: 0, 0%, 21%, 1;
+    --low-grey-III: 0, 0%, 28%, 1;
+
+    --high-grey-II: 0, 0%, 56%, 1;
+    --mid-grey-II: 248, 1%, 71%, 1;
+    --low-grey-II: 0, 0%, 85%, 1;
+
+    --high-grey-I: 0, 0%, 95%, 1;
+    --mid-grey-I: 0, 0%, 98%, 1;
+    --low-grey-I: 0, 0%, 100%, 1;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%; /* dark background */
+    --foreground: 0 0% 98%; /* light foreground */
+
+    --card: 240 10% 3.9%; /* dark card background */
+    --card-foreground: 0 0% 98%; /* light card foreground */
+
+    --popover: 240 10% 3.9%; /* dark popover background */
+    --popover-foreground: 0 0% 98%; /* light popover foreground */
+
+    --primary: 0 0% 98%; /* dark primary color */
+    --primary-foreground: 240 5.9% 10%; /* light primary foreground */
+
+    --secondary: 240 3.7% 15.9%; /* dark secondary color */
+    --secondary-foreground: 0 0% 98%; /* light secondary foreground */
+
+    --muted: 240 3.7% 15.9%; /* dark muted color */
+    --muted-foreground: 240 5% 64.9%; /* light muted foreground */
+
+    --accent: 240 3.7% 15.9%; /* this is a wildcard */
+    --accent-foreground: 0 0% 98%; /* light accent foreground */
+
+    --destructive: 0 62.8% 30.6%; /* dark destructive color */
+    --destructive-foreground: 0 0% 98%; /* light destructive foreground */
+
+    --border: 240 3.7% 15.9%; /* dark border color */
+    --input: 240 3.7% 15.9%; /* dark input color */
+    --ring: 240 4.9% 83.9%; /* dark ring color */
+    --radius: 0.5rem; /* same radius */
+
+    /* tsa design system */
+    --white: 222.2 84% 4.9%; /* dark white */
+    --black: 0 0% 100%; /* light black */
+
+    --high-blue: 235, 53%, 26%, 1; /* dark high blue */
+    --mid-blue: 215, 98%, 48%, 1; /* dark mid blue */
+    --low-blue: 216, 93%, 95%, 1; /* dark low blue */
+
+    --high-danger: 353, 74%, 28%, 1; /* dark high danger */
+    --mid-danger: 353, 85%, 44%, 1; /* dark mid danger */
+    --low-danger: 360, 95%, 87%, 1; /* dark low danger */
+
+    --high-warning: 38, 58%, 24%, 1; /* dark high warning */
+    --mid-warning: 38, 100%, 68%, 1; /* dark mid warning */
+    --low-warning: 38, 100%, 87%, 1; /* dark low warning */
+
+    --high-success: 140, 69%, 20%, 1; /* dark high success */
+    --mid-success: 140, 79%, 32%, 1; /* dark mid success */
+    --low-success: 140, 38%, 85%, 1; /* dark low success */
+
+    --high-grey-III: 0, 0%, 12%, 1; /* dark high grey III */
+    --mid-grey-III: 0, 0%, 21%, 1; /* dark mid grey III */
+    --low-grey-III: 0, 0%, 28%, 1; /* dark low grey III */
+
+    --high-grey-II: 0, 0%, 56%, 1; /* dark high grey II */
+    --mid-grey-II: 248, 1%, 71%, 1; /* dark mid grey II */
+    --low-grey-II: 0, 0%, 85%, 1; /* dark low grey II */
+
+    --high-grey-I: 0, 0%, 95%, 1; /* dark high grey I */
+    --mid-grey-I: 0, 0%, 98%, 1; /* dark mid grey I */
+    --low-grey-I: 0, 0%, 100%, 1; /* dark low grey I */ --chart-1: 220 70% 50%; --chart-2: 160 60% 45%; --chart-3: 30 80% 55%; --chart-4: 280 65% 60%; --chart-5: 340 75% 55%;
+  }
+}
+
+#nprogress .bar {
+  background: linear-gradient(90deg, #fff0bf, #d01127) !important;
+  box-shadow: 10px 0px 20px rgba(255, 240, 191, 0.641) !important;
+  position: fixed;
+  z-index: 99999999 !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px !important;
+}
+/* Base typography settings */
+@layer base {
+  /* Body text */
+  body {
+    font-family: "Inter", sans-serif; /* Ensure a clean, readable font family */
+    color: hsl(var(--foreground));
+    line-height: 1.6; /* Ensures readability */
+  }
+
+  /* Headings */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: hsl(var(--primary));
+  }
+
+  button {
+    height: 48px;
+  }
+
+  p {
+    font-size: 0.875rem; /* 16px */
+    line-height: 1.5; /* Default line-height */
+    @screen sm {
+      font-size: 1rem; /* 16px */
+    }
+  }
+
+  h1 {
+    font-size: 2.25rem; /* 36px */
+    font-weight: 700; /* Consistent weight for headings */
+    @screen sm {
+      font-size: 2.5rem; /* 40px */
+    }
+    @screen md {
+      font-size: 2.75rem; /* 44px */
+    }
+  }
+
+  h2 {
+    font-size: 2rem; /* 32px */
+    font-weight: 700; /* Consistent weight for headings */
+    @screen sm {
+      font-size: 2.25rem; /* 36px */
+    }
+    @screen md {
+      font-size: 2.375rem; /* 38px */
+    }
+  }
+
+  h3 {
+    font-size: 1.75rem; /* 28px */
+    font-weight: 600; /* Consistent weight for headings */
+    @screen sm {
+      font-size: 2rem; /* 32px */
+    }
+  }
+
+  h4 {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 600; /* Consistent weight for headings */
+    @screen sm {
+      font-size: 1.75rem; /* 28px */
+    }
+    @screen md {
+      font-size: 2rem; /* 32px */
+    }
+  }
+
+  h5 {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 500; /* Consistent weight for headings */
+    @screen sm {
+      font-size: 1.5rem; /* 24px */
+    }
+    @screen md {
+      font-size: 1.75rem; /* 28px */
+    }
+  }
+
+  h6 {
+    font-size: 1rem; /* 16px */
+    font-weight: 500; /* Consistent weight for headings */
+    @screen sm {
+      font-size: 1.25rem; /* 20px */
+    }
+    @screen md {
+      font-size: 1.5rem; /* 24px */
+    }
+  }
+}
+
+[data-placeholder="true"] {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.129) 50%,
+    rgba(7, 7, 7, 0) 100%
+  );
+  background-size: cover;
+  transform: translateX(-120%);
+  animation: shimmer 1s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  50% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+.spinner_V8m1 {
+  transform-origin: center;
+  animation: spinner_zKoa 2s linear infinite;
+}
+.spinner_V8m1 circle {
+  stroke-linecap: round;
+  animation: spinner_YpZS 1.5s ease-in-out infinite;
+}
+@keyframes spinner_zKoa {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner_YpZS {
+  0% {
+    stroke-dasharray: 0 150;
+    stroke-dashoffset: 0;
+  }
+  47.5% {
+    stroke-dasharray: 42 150;
+    stroke-dashoffset: -16;
+  }
+  95%,
+  100% {
+    stroke-dasharray: 42 150;
+    stroke-dashoffset: -59;
+  }
+}
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary;
+  border: 4px solid transparent;
+  border-radius: 10px;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-track {
+  background: hsla(0, 0%, 0%, 0.06); /* Color of the track */
+  border-radius: 10px; /* Rounded corners of the track */
+}
+/* For Firefox */
+.html {
+  @apply bg-primary;
+  scrollbar-width: thin; /* Options are 'auto', 'thin', 'none' */
+}
+/* For Internet Explorer and Legacy Edge */
+body {
+  -ms-overflow-style: scrollbar; /* Standard scrollbar */
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

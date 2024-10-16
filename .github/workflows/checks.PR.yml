@@ -1,0 +1,43 @@
+name: PR Checks
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - run: pnpm install
+      - name: "Run Tests"
+        run: pnpm run v:test:ci -- --max-warnings 0
+      - name: "Upload Coverage"
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - run: pnpm install
+      - name: "Run ESLint"
+        run: pnpm run lint
+      # - uses: reviewdog/action-eslint@v1
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     fail_on_error: true
+      #     eslint_flags: ". --ext js,jsx,ts,tsx --ignore-path=.gitignore --max-warnings 0"

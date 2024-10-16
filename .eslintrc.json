@@ -1,0 +1,100 @@
+{
+  "reportUnusedDisableDirectives": true,
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "next/core-web-vitals",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:unicorn/recommended",
+    "plugin:prettier/recommended",
+    "plugin:testing-library/react",
+    "plugin:prettier/recommended"
+  ],
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "coverage",
+    "html",
+    "**/*.test.js",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.test.jsx",
+    "!.prettierrc.cjs"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "prettier",
+    "@typescript-eslint",
+    "react",
+    "unicorn",
+    "unused-imports"
+    // "testing-library"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-console": "error",
+    "react/prop-types": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "unicorn/filename-case": [
+      "error",
+      {
+        "cases": {
+          "kebabCase": true,
+          "pascalCase": true,
+          "camelCase": true
+        }
+      }
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "vitest": {
+      "typecheck": true
+    }
+  },
+  "overrides": [
+    {
+      "files": [".eslintrc.*js", ".vite(|st).(js|ts)"],
+      "env": {
+        "node": true
+      }
+    },
+    {
+      "files": ["*.d.ts"],
+      "rules": {
+        "unicorn/prevent-abbreviations": "off"
+      }
+    },
+    {
+      "files": ["!*.test.(js|jsx|ts|tsx)"],
+      "rules": {
+        "vitest/require-hook": "off",
+        "vitest/max-expects": "off",
+        "vitest/no-hooks": "off",
+        "testing-library/no-node-access": [
+          "error",
+          {
+            "allowContainerFirstChild": true
+          }
+        ]
+      }
+    }
+  ]
+}
