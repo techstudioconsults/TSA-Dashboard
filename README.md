@@ -4,7 +4,7 @@
 
 ## Overview
 
-This repository contains the **[Techstudio Academy]** dashboard, designed as a foundational framework for the organization’s educational programs. The project is built using modern web technologies such as **[Next.js](https://nextjs.org/docs)**, **[TypeScript](https://www.typescriptlang.org/)**, and **[Tailwind CSS](https://tailwindcss.com/)**, with components integrated from **[ShadCN](https://ui.shadcn.com/)** and our own custom component library, [@strategic-dot/components](https://www.npmjs.com/package/@strategic-dot/components), hosted on npm.
+This repository contains the **[Techstudio Academy](https://techstudioacademy.com)** dashboard, designed as a foundational framework for the organization’s educational programs. The project is built using modern web technologies such as **[Next.js](https://nextjs.org/docs)**, **[TypeScript](https://www.typescriptlang.org/)**, and **[Tailwind CSS](https://tailwindcss.com/)**, with components integrated from **[ShadCN](https://ui.shadcn.com/)** and our own custom component library, [@strategic-dot/components](https://www.npmjs.com/package/@strategic-dot/components), hosted on npm.
 
 ## Getting Started
 
