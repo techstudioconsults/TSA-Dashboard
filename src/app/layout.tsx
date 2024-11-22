@@ -1,9 +1,11 @@
 import { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import React from "react";
 
 import "./setup.ts";
 
+import AuthProvider from "~/components/AuthProvider";
+import LenisProvider from "~/components/lenis-provider";
+import Progress_Bar from "~/components/progress-bar";
 import { cn } from "~/lib/utils";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
@@ -20,7 +22,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(openSans.className)}>{children}</body>
+      <body className={cn(openSans.className, "bg-gray-50")}>
+        <Progress_Bar />
+        <AuthProvider>
+          <LenisProvider>{children}</LenisProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }
