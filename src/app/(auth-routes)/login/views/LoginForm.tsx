@@ -11,6 +11,7 @@ import {
   TsaButton,
 } from "@strategic-dot/components";
 import { Eye, EyeOff, Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -31,6 +32,8 @@ const LoginForm: FC = () => {
     },
   });
 
+  const router = useRouter();
+
   const {
     handleSubmit,
     formState: { errors },
@@ -42,8 +45,8 @@ const LoginForm: FC = () => {
     setIsSubmitting(true);
     try {
       await login(data.email, data.password);
-      // Optionally show a success message or navigate to a new page
       reset();
+      router.push("/");
     } catch (error) {
       console.error("Login failed:", error);
     } finally {

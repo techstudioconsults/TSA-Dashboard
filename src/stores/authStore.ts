@@ -1,5 +1,3 @@
-// src/stores/authStore.ts
-
 import { create } from "zustand";
 
 import {
@@ -9,28 +7,27 @@ import {
 
 interface AuthState {
   isAuthenticated: boolean;
-  token: string | undefined; // Add a token property to store the auth token
+  token: string | undefined;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  // hydrateAuthState: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
-  token: undefined, // Initialize token as null
+  token: undefined,
 
   login: async (email, password) => {
     const response = await loginAction(email, password);
-    // console.log(response);
 
     if (response.success && response.token) {
       set({
         isAuthenticated: true,
-        token: response.token, // Store the token in the state
+        token: response.token,
       });
-      // Optionally store token in localStorage or cookie if needed
       localStorage.setItem("authToken", response.token);
     } else {
-      //   console.error("Login failed:", response.error);
+      console.error("Login failed:", response.error);
     }
   },
 
@@ -38,9 +35,16 @@ export const useAuthStore = create<AuthState>((set) => ({
     logoutAction();
     set({
       isAuthenticated: false,
-      token: undefined, // Clear the token from the state
+      token: undefined,
     });
-    // Optionally remove token from localStorage if needed
     localStorage.removeItem("authToken");
   },
+
+  // hydrateAuthState: () => {
+  //   const token = localStorage.getItem("authToken");
+  //   set({
+  //     isAuthenticated: !!token,
+  //     token,
+  //   });
+  // },
 }));

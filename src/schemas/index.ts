@@ -23,6 +23,38 @@ export const classFormSchema = z.object({
   description: z.string().min(1, "Description is required"),
 });
 
+// export const CourseFormSchema = z.object({
+//   title: z.string().min(1, "Course title is required"),
+//   description: z.string().min(1, "Description is required"),
+//   onlineDuration: z
+//     .string()
+//     .min(16, "Online Duration is required")
+//     .regex(/^(\d+)\s+(week|weeks)$/, "Duration must be in format: X weeks"),
+//   weekdayDuration: z
+//     .string()
+//     .min(16, "Weekday Duration is required")
+//     .regex(/^(\d+)\s+(week|weeks)$/, "Duration must be in format: X weeks"),
+//   weekendDuration: z
+//     .string()
+//     .min(16, "Weekend Duration is required")
+//     .regex(/^(\d+)\s+(week|weeks)$/, "Duration must be in format: X weeks"),
+// });
+
+// import { z } from "zod";
+
+export const CourseFormSchema = z.object({
+  title: z.string().min(1, "Course title is required"),
+  description: z.string().min(1, "Description is required"),
+  onlineDuration: z.number().min(1, "Online Duration must be at least 1 week"),
+  weekdayDuration: z
+    .number()
+    .min(1, "Weekday Duration must be at least 1 week"),
+  weekendDuration: z
+    .number()
+    .min(1, "Weekend Duration must be at least 1 week"),
+});
+
+export type courseFormData = z.infer<typeof CourseFormSchema>;
 export type signInFormData = z.infer<typeof signInSchema>;
 export type classFormData = z.infer<typeof classFormSchema>;
 

@@ -1,13 +1,10 @@
-// src/action/auth.actions.ts
-
 interface LoginResponse {
   success: boolean;
   token?: string;
   error?: string;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const login = async (
   email: string,
   password: string,
@@ -26,11 +23,15 @@ export const login = async (
     }
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
+
+    if (data.message == "success") {
+      console.log("every where stew");
+    }
 
     return {
       success: true,
-      token: data.data.accessToken, // Adjust this based on your API response
+      token: data.data.accessToken,
     };
   } catch (error) {
     // console.error("Login error:", error);
@@ -42,6 +43,5 @@ export const login = async (
 };
 
 export const logout = () => {
-  // Clear any stored token or user data here
-  // This can include removing token from localStorage if used
+  // Clear or remove any stored token later
 };
