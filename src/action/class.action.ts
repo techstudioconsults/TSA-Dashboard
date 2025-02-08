@@ -51,7 +51,7 @@ export const createClassAction = async (
     if (!response.ok) {
       throw {
         status: response.status,
-        message: "Failed to create class", // Ensure no extra spaces here
+        message: "Failed to create class",
         details: responseData.errors || {},
       } as APIError;
     }
@@ -113,7 +113,7 @@ export const getClassByIdAction = async (
     if (!response.ok) {
       throw {
         status: response.status,
-        message: "Failed to fetch classes", // Default message
+        message: "Failed to fetch classes",
       } as APIError;
     }
 
