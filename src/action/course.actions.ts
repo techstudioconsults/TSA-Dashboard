@@ -1,29 +1,6 @@
 import { courseFormData } from "~/schemas";
-import { CourseData } from "~/stores/courseStore";
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/courses`;
-
-// Fetch courses action
-
-// interface Duration {
-//   online: number;
-//   weekday: number;
-//   weekend: number;
-// }
-
-// interface CourseData {
-//   id: string;
-//   title: string;
-//   description: string;
-//   duration: Duration;
-// }
-
-// Resource types
-// interface CourseResource {
-//   audio: any[];
-//   video: any[];
-//   document: any[];
-// }
 
 // Duration interface
 interface CourseDuration {
@@ -45,8 +22,6 @@ interface Course {
   title: string;
   description: string;
   duration: CourseDuration;
-  // resources: CourseResource;
-  // tutors: any[];
   classCount: ClassCount;
   createdAt: string;
 }
@@ -58,7 +33,7 @@ interface CourseResponseData {
 }
 
 // Type for the mapped course data returned by fetchCoursesAction
-interface CourseData {
+interface MappedCourseData {
   id: string;
   title: string;
   description: string;
@@ -69,10 +44,10 @@ interface CourseData {
   };
 }
 
-// Updated fetch courses action with proper typing
+// Fetch courses action
 export const fetchCoursesAction = async (
   token: string,
-): Promise<CourseData[]> => {
+): Promise<MappedCourseData[]> => {
   try {
     const response = await fetch(`${BASE_URL}`, {
       headers: {
@@ -103,41 +78,6 @@ export const fetchCoursesAction = async (
   }
 };
 
-// export const fetchCoursesAction = async (
-//   token: string,
-// ): Promise<CourseData[]> => {
-//   try {
-//     const response = await fetch(`${BASE_URL}`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to fetch courses: ${response.statusText}`);
-//     }
-
-//     const data = await response.json();
-//     const courses = data.data || data.results || [];
-
-//     console.log(courses);
-
-//     return courses.map((course: any)  => ({
-//       id: course.id,
-//       title: course.title,
-//       description: course.description,
-//       duration: {
-//         online: course.duration.online,
-//         weekday: course.duration.weekday,
-//         weekend: course.duration.weekend,
-//       },
-//     }));
-//   } catch (error) {
-//     console.error("Error in fetchCoursesAction:", error);
-//     throw error;
-//   }
-// };
-
 // Create course action
 export const createCourseAction = async (
   data: courseFormData,
@@ -153,8 +93,6 @@ export const createCourseAction = async (
       body: JSON.stringify(data),
     });
 
-    // console.log(response);
-
     if (!response.ok) {
       throw new Error(`Failed to create course: ${response.statusText}`);
     }
@@ -168,7 +106,7 @@ export const createCourseAction = async (
 export const getCourseByIdAction = async (
   id: string,
   token: string,
-): Promise<CourseData> => {
+): Promise<MappedCourseData> => {
   try {
     const response = await fetch(`${BASE_URL}/${id}`, {
       headers: {
@@ -180,7 +118,7 @@ export const getCourseByIdAction = async (
       throw new Error(`Failed to fetch course: ${response.statusText}`);
     }
 
-    const course = await response.json();
+    const course = (await response.json()) as { data: Course };
 
     return {
       id: course.data.id,
@@ -213,6 +151,7 @@ export const updateCourseAction = async (
       },
       body: JSON.stringify(data),
     });
+
     if (!response.ok) {
       const errorBody = await response.json();
       throw {
@@ -223,10 +162,11 @@ export const updateCourseAction = async (
     }
   } catch (error) {
     console.error("Error in updateCourseAction:", error);
-    throw error; // Rethrow to pass it up
+    throw error;
   }
 };
 
+// Delete course action
 export const deleteCourseAction = async (
   id: string,
   token: string,
@@ -239,8 +179,12 @@ export const deleteCourseAction = async (
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(response);
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete course: ${response.statusText}`);
+    }
   } catch (error) {
-    console.log(error);
+    console.error("Error in deleteCourseAction:", error);
+    throw error;
   }
 };
