@@ -1,10 +1,16 @@
-const Home = async () => {
+"use client";
+
+// import Cards from "./_views/cards";
+import Cards from "./_views/Cards";
+import Hero from "./_views/Hero";
+import RecentTable from "./_views/RecentTable";
+
+const Home = () => {
   return (
-    <main>
-      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam,
-      ducimus. Delectus ex dolorem, ea voluptates et dolorum quae aliquid
-      deleniti possimus. Blanditiis, cumque culpa! Enim sequi officiis error
-      quos sapiente!
+    <main className="w-full">
+      <Hero />
+      <Cards />
+      <RecentTable />
     </main>
   );
 };

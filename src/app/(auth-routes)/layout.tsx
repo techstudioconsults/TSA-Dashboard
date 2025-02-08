@@ -16,7 +16,7 @@ export default function AuthLayout({
         </Link>
         <Image
           width={742}
-          height={900}
+          height={1000}
           className="h-full w-full object-cover"
           src="/images/model.png"
           alt="model"
@@ -25,9 +25,7 @@ export default function AuthLayout({
       </section>
 
       {/* Content Section */}
-      <section className="flex items-center justify-center p-4">
-        {children}
-      </section>
+      <section className="flex items-center justify-center">{children}</section>
 
       {/* Footer */}
       <p className="absolute bottom-4 right-4 hidden font-bold xl:block">

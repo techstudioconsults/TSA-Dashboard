@@ -38,8 +38,9 @@
   ],
   "rules": {
     "prettier/prettier": "error",
-    "no-console": "error",
+    // "no-console": "error",
     "react/prop-types": "off",
+    "unicorn/no-null": "off",
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": [
       "warn",

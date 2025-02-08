@@ -1,4 +1,10 @@
+import LoginForm from "./views/LoginForm";
+
 const Login = () => {
-  return <div>Login</div>;
+  return (
+    <>
+      <LoginForm />
+    </>
+  );
 };
 export default Login;
