@@ -57,10 +57,10 @@ const ClassCards = () => {
     return <div>Error fetching classes: {error}</div>;
   }
 
-  const openClassModal = (classId: string) => {
-    console.log(classId);
-    setSelectedCourseId(classId);
-  };
+  // const openClassModal = (classId: string) => {
+  //   console.log(classId);
+  //   setSelectedCourseId(classId);
+  // };
 
   return (
     <div className="">
@@ -94,14 +94,10 @@ const ClassCards = () => {
                 <h3 className="text-lg font-semibold text-indigo-900">
                   {classInfo.courseTitle}
                 </h3>
-                <button
-                  onClick={() => openClassModal(classInfo.id)}
-                  className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100"
-                >
+                <button className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100">
                   <MoreVertical className="h-5 w-5" />
                 </button>
               </div>
-
               <div className="flex flex-col space-y-3">
                 <div className="flex items-center justify-between text-gray-600">
                   <div className="flex items-center gap-1">
