@@ -34,11 +34,6 @@ const CreateCourseForm: FC<CreateCourseFormProperties> = ({ onCancel }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
 
-  // Hydrate auth state on mount
-  // useEffect(() => {
-  //   hydrateAuthState();
-  // }, [hydrateAuthState]);
-
   const formMethods = useForm<courseFormData>({
     resolver: zodResolver(CourseFormSchema),
     defaultValues: {
@@ -58,13 +53,12 @@ const CreateCourseForm: FC<CreateCourseFormProperties> = ({ onCancel }) => {
   } = formMethods;
 
   const onSubmit = async (data: courseFormData) => {
-    // console.log(data);
     // console.log(token);
     if (!token) {
-      console.error("User is not authenticated");
+      // console.error("User is not authenticated");
+      router.push("/login");
       return;
     }
-
     setIsSubmitting(true);
     try {
       await createCourse(data, token);
@@ -288,7 +282,7 @@ const CreateCourseForm: FC<CreateCourseFormProperties> = ({ onCancel }) => {
                   About Course
                 </label>
                 <FormControl>
-                  <Input
+                  <textarea
                     placeholder="Course description"
                     {...field}
                     className="h-32 w-full rounded-md border px-4 py-2"

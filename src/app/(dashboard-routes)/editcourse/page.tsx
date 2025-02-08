@@ -1,4 +1,4 @@
-import EditCourseForm from "./_views/EditCourseForm";
+import EditCourseForm from "../courses/[id]/_views/EditCourseForm";
 
 const EditCourse = () => {
   return (

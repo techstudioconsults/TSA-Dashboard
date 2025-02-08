@@ -20,7 +20,7 @@ const Cards = () => {
         </div>
         <div className="flex gap-3 rounded-lg bg-white p-5 shadow">
           <div className="flex flex-col gap-3">
-            <h6>Total Course</h6>
+            <h6>Total Sheet</h6>
             <h3>2782</h3>
             <p> Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
           </div>

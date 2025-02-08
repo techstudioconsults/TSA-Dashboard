@@ -17,26 +17,26 @@ import {
   TsaButton,
 } from "@strategic-dot/components";
 import { Loader } from "lucide-react";
+import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { classFormSchema } from "~/schemas";
-
-type ClassFormData = z.infer<typeof classFormSchema>;
+import { createClassAction } from "~/action/class.action";
+import { useFetchData } from "~/hooks/useFetchData";
+import { classFormData, classFormSchema } from "~/schemas";
+import { useAuthStore } from "~/stores/authStore";
+import { useCourseStore } from "~/stores/courseStore";
 
 interface CreateClassFormProperties {
-  onSubmit: (formData: ClassFormData) => void;
+  // onSubmit: (formData: classFormData) => void;
   onCancel: () => void;
 }
 
-const CreateClassForm: FC<CreateClassFormProperties> = ({
-  onSubmit,
-  onCancel,
-}) => {
+const CreateClassForm: FC<CreateClassFormProperties> = ({ onCancel }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const router = useRouter();
 
-  const formMethods = useForm<ClassFormData>({
+  const formMethods = useForm<classFormData>({
     resolver: zodResolver(classFormSchema),
     defaultValues: {
       title: "",
@@ -44,25 +44,58 @@ const CreateClassForm: FC<CreateClassFormProperties> = ({
       startDate: "",
       endDate: "",
       course: "",
-      preference: "weekend",
+      type: "weekday",
       description: "",
     },
   });
 
+  // const { courses, fetchCourses } = useCourseStore();
+  const { token } = useAuthStore();
   const { handleSubmit, formState, control, reset } = formMethods;
   const { errors } = formState;
+  const courses = useCourseStore((state) => state.courses);
+  const { loading, error } = useFetchData(token);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const handleFormSubmit = async (data: ClassFormData) => {
+  const onSubmit = async (data: classFormData) => {
+    console.log(data);
     setIsSubmitting(true);
+
+    if (!token) {
+      // console.error("Token is undefined. Please log in.");
+      router.push("/login");
+      return;
+    }
     try {
-      await onSubmit(data);
+      await createClassAction(
+        {
+          title: data.title,
+          description: data.description,
+          fee: data.fee,
+          startDate: data.startDate,
+          endDate: data.endDate,
+          type: data.type,
+        },
+        data.course,
+        token,
+      );
       reset();
-    } catch {
-      // handle error
+      router.push(`/classes`);
+    } catch (error: unknown) {
+      console.log(error);
+      setFormError(`Failed to create class: ${error}`);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (error) {
+    return <p className="text-center text-red-500">{error}</p>;
+  }
+
+  if (loading) {
+    return <p className="animate-zoom-in">Fetching course.....</p>;
+  }
 
   return (
     <div className="py-6">
@@ -78,7 +111,7 @@ const CreateClassForm: FC<CreateClassFormProperties> = ({
         <div className="flex space-x-4">
           <TsaButton
             variant="primary"
-            onClick={handleSubmit(handleFormSubmit)}
+            onClick={handleSubmit(onSubmit)}
             isDisabled={isSubmitting}
             className="bg-blue-500"
           >
@@ -100,6 +133,7 @@ const CreateClassForm: FC<CreateClassFormProperties> = ({
 
       <Form {...formMethods}>
         <form className="space-y-6">
+          {formError && <p className="font-bold text-red-500">{formError}</p>}
           <div className="grid grid-cols-2 items-center gap-6">
             {/* Class Title */}
             <FormField
@@ -153,11 +187,13 @@ const CreateClassForm: FC<CreateClassFormProperties> = ({
                 <FormItem>
                   <FormLabel>Start Date</FormLabel>
                   <FormControl>
-                    <Input
-                      type="date"
-                      {...field}
-                      className="w-full rounded-md border px-4 py-2"
-                    />
+                    <div className="relative w-full">
+                      <Input
+                        type="date"
+                        {...field}
+                        className="w-full rounded-md border px-4 py-2 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3"
+                      />
+                    </div>
                   </FormControl>
                   {errors.startDate && (
                     <FormMessage>{errors.startDate?.message}</FormMessage>
@@ -174,11 +210,13 @@ const CreateClassForm: FC<CreateClassFormProperties> = ({
                 <FormItem>
                   <FormLabel>End Date</FormLabel>
                   <FormControl>
-                    <Input
-                      type="date"
-                      {...field}
-                      className="w-full rounded-md border px-4 py-2"
-                    />
+                    <div className="relative w-full">
+                      <Input
+                        type="date"
+                        {...field}
+                        className="w-full rounded-md border px-4 py-2 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3"
+                      />
+                    </div>
                   </FormControl>
                   {errors.endDate && (
                     <FormMessage>{errors.endDate?.message}</FormMessage>
@@ -202,8 +240,11 @@ const CreateClassForm: FC<CreateClassFormProperties> = ({
                         <SelectValue placeholder="Choose a course" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="course1">Course 1</SelectItem>
-                        <SelectItem value="course2">Course 2</SelectItem>
+                        {courses?.map((course) => (
+                          <SelectItem key={course.id} value={course.id}>
+                            {course.title}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -216,7 +257,7 @@ const CreateClassForm: FC<CreateClassFormProperties> = ({
 
             {/* Preference */}
             <FormField
-              name="preference"
+              name="type"
               control={control}
               render={({ field }) => (
                 <FormItem>
@@ -252,8 +293,8 @@ const CreateClassForm: FC<CreateClassFormProperties> = ({
                       </label>
                     </div>
                   </FormControl>
-                  {errors.preference && (
-                    <FormMessage>{errors.preference?.message}</FormMessage>
+                  {errors.type && (
+                    <FormMessage>{errors.type?.message}</FormMessage>
                   )}
                 </FormItem>
               )}
