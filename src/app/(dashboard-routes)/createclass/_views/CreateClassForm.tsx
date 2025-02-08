@@ -17,7 +17,7 @@ import {
   TsaButton,
 } from "@strategic-dot/components";
 import { Loader } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 
