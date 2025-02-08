@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 
 interface CreateClassFormProperties {
-  onSubmit: (formData: ClassFormData) => void;
   onCancel: () => void;
 }
 
@@ -17,10 +16,7 @@ interface ClassFormData {
   description: string;
 }
 
-const EditClassForm: React.FC<CreateClassFormProperties> = ({
-  // onSubmit,
-  onCancel,
-}) => {
+const EditClassForm: React.FC<CreateClassFormProperties> = ({ onCancel }) => {
   const [formData] = useState<ClassFormData>({
     title: "",
     fee: "",

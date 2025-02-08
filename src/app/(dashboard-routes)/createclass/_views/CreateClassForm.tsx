@@ -28,7 +28,6 @@ import { useAuthStore } from "~/stores/authStore";
 import { useCourseStore } from "~/stores/courseStore";
 
 interface CreateClassFormProperties {
-  // onSubmit: (formData: classFormData) => void;
   onCancel: () => void;
 }
 

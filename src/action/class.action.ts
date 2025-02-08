@@ -31,11 +31,45 @@ interface OngoingClassesResponse {
   };
 }
 
+// export const createClassAction = async (
+//   data: Omit<classFormData, "course">,
+//   courseId: string,
+//   token: string,
+// ): Promise<void> => {
+//   try {
+//     const response = await fetch(`${BASE_URL}/cohorts/courses/${courseId}`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(data),
+//     });
+
+//     const responseData: APIResponse<unknown> = await response.json();
+
+//     if (!response.ok) {
+//       throw {
+//         status: response.status,
+//         message: "Failed to create class",
+//         details: responseData.errors || {},
+//       } as APIError;
+//     }
+//   } catch (error) {
+//     const apiError = error as APIError;
+//     console.error("Error in createClassAction:", apiError);
+//     throw {
+//       message: apiError.message || "An unexpected error occurred.",
+//       details: apiError.details || {},
+//     } as APIError;
+//   }
+// };
 export const createClassAction = async (
   data: Omit<classFormData, "course">,
   courseId: string,
   token: string,
-): Promise<void> => {
+): Promise<ClassData> => {
+  // Now returns ClassData
   try {
     const response = await fetch(`${BASE_URL}/cohorts/courses/${courseId}`, {
       method: "POST",
@@ -46,15 +80,17 @@ export const createClassAction = async (
       body: JSON.stringify(data),
     });
 
-    const responseData: APIResponse<unknown> = await response.json();
+    const responseData: APIResponse<ClassData> = await response.json(); // Expecting ClassData here
 
     if (!response.ok) {
       throw {
         status: response.status,
-        message: "Failed to create class",
+        message: responseData.message || "Failed to create class",
         details: responseData.errors || {},
       } as APIError;
     }
+
+    return responseData.data; // Return the created class
   } catch (error) {
     const apiError = error as APIError;
     console.error("Error in createClassAction:", apiError);
@@ -156,59 +192,5 @@ export const getClassByIdAction = async (
 //     throw {
 //       message: apiError.message || "An unexpected error occurred.",
 //     } as APIError;
-//   }
-// };
-
-// export const updateClassAction = async (
-//   id: string,
-//   data: classFormData,
-//   token: string,
-// ): Promise<void> => {
-//   try {
-//     const response = await fetch(`${BASE_URL}/classes/${id}`, {
-//       method: "PATCH",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify(data),
-//     });
-
-//     if (!response.ok) {
-//       const errorBody: APIResponse<unknown> = await response.json();
-//       throw {
-//         status: response.status,
-//         message: errorBody.message || "Failed to update class",
-//         details: errorBody,
-//       } as APIError;
-//     }
-//   } catch (error) {
-//     const apiError = error as APIError;
-//     console.error("Error in updateClassAction:", apiError);
-//     throw apiError;
-//   }
-// };
-
-// export const deleteClassAction = async (
-//   id: string,
-//   token: string,
-// ): Promise<void> => {
-//   try {
-//     const response = await fetch(`${BASE_URL}/classes/${id}`, {
-//       method: "DELETE",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     if (!response.ok) {
-//       throw new Error(`Failed to delete class: ${response.statusText}`);
-//     }
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       console.error("Error in deleteClassAction:", error);
-//       throw error;
-//     }
-//     throw new Error("An unexpected error occurred");
 //   }
 // };

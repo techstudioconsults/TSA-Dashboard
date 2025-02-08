@@ -99,12 +99,25 @@ import { create } from "zustand";
 import {
   ClassData,
   createClassAction,
-  deleteClassAction,
   fetchClassesByCourseIdAction,
-  updateClassAction,
 } from "~/action/class.action";
 import { classFormData } from "~/schemas";
 
+// interface ClassState {
+//   classes: ClassData[];
+//   fetchClasses: (courseId: string, token: string) => Promise<void>;
+//   createClass: (
+//     data: classFormData,
+//     courseId: string,
+//     token: string,
+//   ) => Promise<void>;
+//   // updateClass: (
+//   //   id: string,
+//   //   data: classFormData,
+//   //   token: string,
+//   // ) => Promise<void>;
+//   // deleteClass: (id: string, token: string) => Promise<void>;
+// }
 interface ClassState {
   classes: ClassData[];
   fetchClasses: (courseId: string, token: string) => Promise<void>;
@@ -113,12 +126,6 @@ interface ClassState {
     courseId: string,
     token: string,
   ) => Promise<void>;
-  updateClass: (
-    id: string,
-    data: classFormData,
-    token: string,
-  ) => Promise<void>;
-  deleteClass: (id: string, token: string) => Promise<void>;
 }
 
 export const useClassStore = create<ClassState>((set) => ({
@@ -128,46 +135,50 @@ export const useClassStore = create<ClassState>((set) => ({
     try {
       const classes = await fetchClassesByCourseIdAction(courseId, token);
       set({ classes }); // Update the Zustand state with the fetched classes
-    } catch (error) {
-      console.error("Error fetching classes:", error.message);
+    } catch {
+      console.error("Error fetching classes:");
     }
   },
 
   createClass: async (data, courseId, token) => {
     try {
       const newClass = await createClassAction(data, courseId, token);
-      set((state) => ({
-        classes: [...state.classes, newClass], // Add the newly created class
-      }));
-    } catch (error) {
-      console.error("Error creating class:", error.message);
-      throw error;
-    }
-  },
 
-  updateClass: async (id, data, token) => {
-    try {
-      await updateClassAction(id, data, token);
       set((state) => ({
-        classes: state.classes.map((classItem) =>
-          classItem.id === id ? { ...classItem, ...data } : classItem,
-        ),
+        classes: [...state.classes, newClass], // No TypeScript error now
       }));
     } catch (error) {
-      console.error("Error updating class:", error.message);
+      console.error("Error creating class:", error);
       throw error;
     }
   },
+  // createClass: async (data, courseId, token) => {
+  //   try {
+  //     const newClass = await createClassAction(data, courseId, token);
+  //     set((state) => ({
+  //       classes: [...state.classes, newClass],
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error creating class:");
+  //     throw error;
+  //   }
+  // },
 
-  deleteClass: async (id, token) => {
-    try {
-      await deleteClassAction(id, token);
-      set((state) => ({
-        classes: state.classes.filter((classItem) => classItem.id !== id),
-      }));
-    } catch (error) {
-      console.error("Error deleting class:", error.message);
-      throw error;
-    }
-  },
+  // createClass: async (data, courseId, token) => {
+  //   try {
+  //     const newClass = await createClassAction(data, courseId, token);
+
+  //     if (!newClass) {
+  //       console.error("Failed to create class. Received undefined or void.");
+  //       return; // Exit early to prevent state update with invalid data
+  //     }
+
+  //     set((state) => ({
+  //       classes: [...state.classes, newClass],
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error creating class:", error);
+  //     throw error;
+  //   }
+  // },
 }));
