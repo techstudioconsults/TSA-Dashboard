@@ -285,7 +285,7 @@ export const fetchClassesByCourseIdAction = async (
     if (!response.ok) {
       throw {
         status: response.status,
-        message: responseData.message || "Failed to fetch classes",
+        message: "Failed to fetch classes",
       } as APIError;
     }
 
