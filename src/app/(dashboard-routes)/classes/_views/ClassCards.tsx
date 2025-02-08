@@ -22,7 +22,7 @@ const ClassCards = () => {
       setActiveCategory(courses[0].title);
       fetchClassesForCourse(courses[0].id);
     }
-  }, []);
+  }, [courses]);
 
   const fetchClassesForCourse = async (courseId: string) => {
     try {
