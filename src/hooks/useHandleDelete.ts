@@ -15,8 +15,8 @@ export const useHandleDelete = () => {
 
     try {
       await deleteCourseAction(courseId, token);
-      closeModal(); // Close modal after successful delete
-      fetchCourses(token); // Refresh the courses
+      closeModal();
+      fetchCourses(token);
     } catch (error) {
       console.error("Failed to delete course:", error);
     }

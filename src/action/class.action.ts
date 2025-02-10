@@ -31,39 +31,6 @@ interface OngoingClassesResponse {
   };
 }
 
-// export const createClassAction = async (
-//   data: Omit<classFormData, "course">,
-//   courseId: string,
-//   token: string,
-// ): Promise<void> => {
-//   try {
-//     const response = await fetch(`${BASE_URL}/cohorts/courses/${courseId}`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify(data),
-//     });
-
-//     const responseData: APIResponse<unknown> = await response.json();
-
-//     if (!response.ok) {
-//       throw {
-//         status: response.status,
-//         message: "Failed to create class",
-//         details: responseData.errors || {},
-//       } as APIError;
-//     }
-//   } catch (error) {
-//     const apiError = error as APIError;
-//     console.error("Error in createClassAction:", apiError);
-//     throw {
-//       message: apiError.message || "An unexpected error occurred.",
-//       details: apiError.details || {},
-//     } as APIError;
-//   }
-// };
 export const createClassAction = async (
   data: Omit<classFormData, "course">,
   courseId: string,
@@ -80,7 +47,7 @@ export const createClassAction = async (
       body: JSON.stringify(data),
     });
 
-    const responseData: APIResponse<ClassData> = await response.json(); // Expecting ClassData here
+    const responseData: APIResponse<ClassData> = await response.json(); // Expecting ClassData
 
     if (!response.ok) {
       throw {
@@ -162,35 +129,3 @@ export const getClassByIdAction = async (
     } as APIError;
   }
 };
-
-// export const getClassByIdAction = async (
-//   courseId: string,
-//   token: string,
-// ): Promise<ClassData[]> => {
-//   try {
-//     const response = await fetch(`${BASE_URL}/cohorts/courses/${courseId}`, {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     const responseData: OngoingClassesResponse = await response.json();
-//     if (!response.ok) {
-//       throw {
-//         status: response.status,
-//         message: responseData.message || "Failed to fetch classes",
-//         // message: "Failed to fetch classes",
-//       } as APIError;
-//     }
-
-//     return responseData.data.ongoing;
-//   } catch (error) {
-//     const apiError = error as APIError;
-//     console.error("Error fetching classes by course:", apiError);
-//     throw {
-//       message: apiError.message || "An unexpected error occurred.",
-//     } as APIError;
-//   }
-// };

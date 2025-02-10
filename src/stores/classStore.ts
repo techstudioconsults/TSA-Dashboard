@@ -134,7 +134,7 @@ export const useClassStore = create<ClassState>((set) => ({
   fetchClasses: async (courseId, token) => {
     try {
       const classes = await fetchClassesByCourseIdAction(courseId, token);
-      set({ classes }); // Update the Zustand state with the fetched classes
+      set({ classes });
     } catch {
       console.error("Error fetching classes:");
     }
@@ -152,33 +152,4 @@ export const useClassStore = create<ClassState>((set) => ({
       throw error;
     }
   },
-  // createClass: async (data, courseId, token) => {
-  //   try {
-  //     const newClass = await createClassAction(data, courseId, token);
-  //     set((state) => ({
-  //       classes: [...state.classes, newClass],
-  //     }));
-  //   } catch (error) {
-  //     console.error("Error creating class:");
-  //     throw error;
-  //   }
-  // },
-
-  // createClass: async (data, courseId, token) => {
-  //   try {
-  //     const newClass = await createClassAction(data, courseId, token);
-
-  //     if (!newClass) {
-  //       console.error("Failed to create class. Received undefined or void.");
-  //       return; // Exit early to prevent state update with invalid data
-  //     }
-
-  //     set((state) => ({
-  //       classes: [...state.classes, newClass],
-  //     }));
-  //   } catch (error) {
-  //     console.error("Error creating class:", error);
-  //     throw error;
-  //   }
-  // },
 }));
