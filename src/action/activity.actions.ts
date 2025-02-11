@@ -21,7 +21,7 @@ export const getAllActivityAction = async (
     }
 
     const data = await response.json();
-    return data.data.data; // ✅ Fix: correctly access the nested array
+    return data.data.data;
   } catch (error) {
     console.error("Error in getAllActivityAction:", error);
     throw error;

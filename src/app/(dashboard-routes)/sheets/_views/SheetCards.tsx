@@ -45,7 +45,7 @@ const SheetCards = () => {
       await handleDeleteSpreadsheet(
         selectedSheetId,
         () => setWarningModalOpen(false),
-        () => fetchSheets(token), // Pass token explicitly
+        () => fetchSheets(token),
       );
     } catch (error) {
       console.error("Error deleting spreadsheet:", error);
