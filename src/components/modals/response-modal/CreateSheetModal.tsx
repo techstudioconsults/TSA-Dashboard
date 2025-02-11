@@ -40,7 +40,7 @@ const CreateSheetModal: React.FC<CreateSheetModalProperties> = ({
       await createSheet(data, token);
       reset();
       onClose();
-      router.push("/sheets"); // Adjust the route as needed
+      router.push("/sheets");
     } catch (error) {
       console.error("Error creating sheet:", error);
     }
