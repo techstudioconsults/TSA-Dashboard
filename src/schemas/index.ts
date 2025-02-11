@@ -46,7 +46,12 @@ export const CourseFormSchema = z.object({
     .min(1, "Weekend Duration must be at least 1 week"),
 });
 
+export const SheetsFormSchema = z.object({
+  title: z.string().min(1, "Course title is required"),
+});
+
 export type courseFormData = z.infer<typeof CourseFormSchema>;
 export type signInFormData = z.infer<typeof signInSchema>;
 export type classFormData = z.infer<typeof classFormSchema>;
 export type classSubmitFormData = z.infer<typeof classSubmitFormSchema>;
+export type SheetFormData = z.infer<typeof SheetsFormSchema>;

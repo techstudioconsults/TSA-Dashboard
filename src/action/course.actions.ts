@@ -188,3 +188,19 @@ export const deleteCourseAction = async (
     throw error;
   }
 };
+
+// total course.actions.ts
+export const getTotalCourseAction = async (token: string) => {
+  try {
+    const response = await fetch(`${BASE_URL}/total`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const json = await response.json();
+    return json.data.totalCourses;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};

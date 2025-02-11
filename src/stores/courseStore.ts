@@ -5,6 +5,7 @@ import {
   deleteCourseAction,
   fetchCoursesAction,
   getCourseByIdAction,
+  getTotalCourseAction,
   updateCourseAction,
 } from "~/action/course.actions";
 import { courseFormData } from "~/schemas";
@@ -31,10 +32,13 @@ interface CourseState {
     data: courseFormData,
     token: string,
   ) => Promise<void>;
+  totalCourse: number;
+  fetchTotalCourse: (token: string) => Promise<void>;
 }
 
 export const useCourseStore = create<CourseState>((set) => ({
   courses: [],
+  totalCourse: 0,
 
   fetchCourses: async (token) => {
     try {
@@ -78,6 +82,17 @@ export const useCourseStore = create<CourseState>((set) => ({
     } catch (error) {
       console.error("Error deleting course:", error);
       console.log(error);
+    }
+  },
+
+  fetchTotalCourse: async (token) => {
+    try {
+      // console.log("Token:", token);
+      const total = await getTotalCourseAction(token);
+      // console.log("API Response:", total);
+      set({ totalCourse: total });
+    } catch (error) {
+      console.error("Error:", error);
     }
   },
 }));
