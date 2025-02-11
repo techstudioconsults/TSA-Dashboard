@@ -1,13 +1,46 @@
+// import Cookies from "js-cookie";
+
+// import { deleteCourseAction } from "~/action/course.actions";
+// import { useCourseStore } from "~/stores/courseStore";
+
+// export const useHandleDelete = () => {
+//   const { fetchCourses } = useCourseStore();
+//   const token = Cookies.get("authToken");
+
+//   const handleDelete = async (courseId: string, closeModal: () => void) => {
+//     if (!courseId || !token) {
+//       console.error("Course ID or token is missing");
+//       return;
+//     }
+
+//     try {
+//       await deleteCourseAction(courseId, token);
+//       closeModal();
+//       fetchCourses(token);
+//     } catch (error) {
+//       console.error("Failed to delete course:", error);
+//     }
+//   };
+
+//   return { handleDelete };
+// };
+
 import Cookies from "js-cookie";
 
+import { deleteClassAction } from "~/action/class.action";
 import { deleteCourseAction } from "~/action/course.actions";
+// import { useClassStore } from "~/stores/classStore";
 import { useCourseStore } from "~/stores/courseStore";
 
 export const useHandleDelete = () => {
   const { fetchCourses } = useCourseStore();
+  // const { fetchClasses } = useClassStore(); // Use deleteClass from the store
   const token = Cookies.get("authToken");
 
-  const handleDelete = async (courseId: string, closeModal: () => void) => {
+  const handleDeleteCourse = async (
+    courseId: string,
+    closeModal: () => void,
+  ) => {
     if (!courseId || !token) {
       console.error("Course ID or token is missing");
       return;
@@ -16,11 +49,49 @@ export const useHandleDelete = () => {
     try {
       await deleteCourseAction(courseId, token);
       closeModal();
-      fetchCourses(token);
+      fetchCourses(token); // Refresh the list of courses
     } catch (error) {
       console.error("Failed to delete course:", error);
     }
   };
 
-  return { handleDelete };
+  // const handleDeleteClass = async (
+  //   classId: string,
+  //   courseId: string,
+  //   closeModal: () => void,
+  // ) => {
+  //   if (!classId || !courseId || !token) {
+  //     console.error("Class ID, Course ID, or token is missing");
+  //     return;
+  //   }
+
+  //   try {
+  //     await deleteClassAction(classId, token);
+  //     closeModal();
+  //     await fetchClasses(courseId, token); // Refetch classes for the specific course
+  //   } catch (error) {
+  //     console.error("Failed to delete class:", error);
+  //   }
+  // };
+  const handleDeleteClass = async (
+    classId: string,
+    courseId: string,
+    closeModal: () => void,
+    refetchClasses: () => Promise<void>, // Callback to refetch classes
+  ) => {
+    if (!classId || !courseId || !token) {
+      console.error("Class ID, Course ID, or token is missing");
+      return;
+    }
+
+    try {
+      await deleteClassAction(classId, token);
+      closeModal();
+      await refetchClasses(); // Call the refetch callback
+    } catch (error) {
+      console.error("Failed to delete class:", error);
+    }
+  };
+
+  return { handleDeleteCourse, handleDeleteClass };
 };

@@ -21,7 +21,7 @@ const CourseCards = () => {
   const { loading, error } = useFetchData(token);
 
   const router = useRouter();
-  const { handleDelete } = useHandleDelete();
+  const { handleDeleteCourse } = useHandleDelete();
 
   const openCourseModal = (courseId: string) => {
     setSelectedCourseId(courseId);
@@ -34,7 +34,7 @@ const CourseCards = () => {
 
   const confirmDelete = () => {
     if (selectedCourseId) {
-      handleDelete(selectedCourseId, () => setWarningModalOpen(false));
+      handleDeleteCourse(selectedCourseId, () => setWarningModalOpen(false));
     }
   };
 
