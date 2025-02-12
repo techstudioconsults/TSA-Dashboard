@@ -98,7 +98,7 @@ const TopNav = () => {
               <TsaButton
                 variant="primary"
                 className="bg-mid-blue py-3"
-                onClick={handleCreateSheetClick} // Use the new handler
+                onClick={handleCreateSheetClick}
               >
                 {routeButton.label}
               </TsaButton>
