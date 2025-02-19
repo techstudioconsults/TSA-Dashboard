@@ -2,7 +2,7 @@
 
 import { Calendar, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { ClassData, getClassByIdAction } from "~/action/class.action";
 import { useFetchData } from "~/hooks/useFetchData";
@@ -24,25 +24,28 @@ const ClassCards = () => {
   const [classModalOpen, setClassModalOpen] = useState(false);
   const [warningModalOpen, setWarningModalOpen] = useState(false);
 
+  const fetchClassesForCourse = useCallback(
+    async (courseId: string) => {
+      try {
+        if (token) {
+          const response = await getClassByIdAction(courseId, token);
+          setClasses(response);
+        } else {
+          console.error("Token is undefined");
+        }
+      } catch (error) {
+        console.error("Failed to fetch classes:", error);
+      }
+    },
+    [token],
+  );
+
   useEffect(() => {
     if (courses.length > 0) {
       setActiveCategory(courses[0].title);
       fetchClassesForCourse(courses[0].id);
     }
-  }, [courses]);
-
-  const fetchClassesForCourse = async (courseId: string) => {
-    try {
-      if (token) {
-        const response = await getClassByIdAction(courseId, token);
-        setClasses(response); // Update the classes state
-      } else {
-        console.error("Token is undefined");
-      }
-    } catch (error) {
-      console.error("Failed to fetch classes:", error);
-    }
-  };
+  }, [courses, fetchClassesForCourse]);
 
   const handleCategoryChange = (category: string, courseId: string) => {
     setActiveCategory(category);

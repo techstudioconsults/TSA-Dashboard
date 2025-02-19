@@ -49,30 +49,30 @@ export const getSpreadsheetsAction = async (token: string) => {
 };
 
 // Delete Spreadsheet Action
-export const deleteSpreadsheetAction = async (
-  sheetId: string,
-  token: string,
-): Promise<void> => {
-  try {
-    console.log(sheetId);
+// export const deleteSpreadsheetAction = async (
+//   sheetId: string,
+//   token: string,
+// ): Promise<void> => {
+//   try {
+//     console.log(sheetId);
 
-    const response = await fetch(`${BASE_URL}/${sheetId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const responseData = await response.json();
-    console.log(responseData);
+//     const response = await fetch(`${BASE_URL}/${sheetId}`, {
+//       method: "DELETE",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+//     const responseData = await response.json();
+//     console.log(responseData);
 
-    if (!response.ok) {
-      throw new Error(`Failed to delete spreadsheet: ${response.statusText}`);
-    }
-  } catch (error) {
-    console.error("Error in deleteSpreadsheetAction:", error);
-    throw error;
-  }
-};
+//     if (!response.ok) {
+//       throw new Error(`Failed to delete spreadsheet: ${response.statusText}`);
+//     }
+//   } catch (error) {
+//     console.error("Error in deleteSpreadsheetAction:", error);
+//     throw error;
+//   }
+// };
 
 export const getTotalSheetAction = async (token: string): Promise<number> => {
   try {
@@ -87,7 +87,7 @@ export const getTotalSheetAction = async (token: string): Promise<number> => {
     }
 
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
 
     return data.data.totalSpreadsheet;
   } catch (error) {

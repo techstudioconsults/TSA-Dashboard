@@ -20,7 +20,7 @@ const Cards = () => {
       useCourseStore.getState().fetchTotalCourse(token);
       useSheetStore.getState().fetchTotalSheets(token);
     }
-  }, []);
+  }, [token]);
 
   return (
     <div>

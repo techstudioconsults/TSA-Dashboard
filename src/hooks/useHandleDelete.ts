@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 
 import { deleteClassAction } from "~/action/class.action";
 import { deleteCourseAction } from "~/action/course.actions";
-import { deleteSpreadsheetAction } from "~/action/sheet.actions";
+// import { deleteSpreadsheetAction } from "~/action/sheet.actions";
 // import { useClassStore } from "~/stores/classStore";
 import { useCourseStore } from "~/stores/courseStore";
 
@@ -49,26 +49,26 @@ export const useHandleDelete = () => {
     }
   };
 
-  const handleDeleteSpreadsheet = async (
-    sheetId: string,
-    closeModal: () => void,
-    refetchSheets: () => Promise<void>,
-  ) => {
-    const token = Cookies.get("authToken");
+  // const handleDeleteSpreadsheet = async (
+  //   sheetId: string,
+  //   closeModal: () => void,
+  //   refetchSheets: () => Promise<void>,
+  // ) => {
+  //   const token = Cookies.get("authToken");
 
-    if (!sheetId || !token) {
-      console.error("Sheet ID or token is missing");
-      return;
-    }
+  //   if (!sheetId || !token) {
+  //     console.error("Sheet ID or token is missing");
+  //     return;
+  //   }
 
-    try {
-      await deleteSpreadsheetAction(sheetId, token);
-      closeModal(); // Close the modal only on success
-      await refetchSheets(); // Refresh the list of sheets
-    } catch (error) {
-      console.error("Failed to delete spreadsheet:", error);
-    }
-  };
+  //   try {
+  //     await deleteSpreadsheetAction(sheetId, token);
+  //     closeModal(); // Close the modal only on success
+  //     await refetchSheets(); // Refresh the list of sheets
+  //   } catch (error) {
+  //     console.error("Failed to delete spreadsheet:", error);
+  //   }
+  // };
 
-  return { handleDeleteCourse, handleDeleteClass, handleDeleteSpreadsheet };
+  return { handleDeleteCourse, handleDeleteClass };
 };

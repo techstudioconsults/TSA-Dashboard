@@ -2,13 +2,14 @@
 
 import { TsaButton } from "@strategic-dot/components";
 import { Calendar, MoreVertical, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { useHandleDelete } from "~/hooks/useHandleDelete";
+// import { useHandleDelete } from "~/hooks/useHandleDelete";
 import { useAuthStore } from "~/stores/authStore";
 import { useSheetStore } from "~/stores/sheetStore";
-import SheetModal from "./SheetModal";
-import WarningModal from "./WarningModal";
+
+// import SheetModal from "./SheetModal";
+// import WarningModal from "./WarningModal";
 
 // Function to format the date
 const formatDate = (timestamp: string) => {
@@ -25,11 +26,11 @@ const SheetCards = () => {
   const sheetData = useSheetStore((state) => state.sheetData);
   const fetchSheets = useSheetStore((state) => state.fetchSheets);
 
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [warningModalOpen, setWarningModalOpen] = useState(false);
-  const [selectedSheetId, setSelectedSheetId] = useState<string | null>(null);
+  // const [isModalOpen, setModalOpen] = useState(false);
+  // const [warningModalOpen, setWarningModalOpen] = useState(false);
+  // const [selectedSheetId, setSelectedSheetId] = useState<string | null>(null);
 
-  const { handleDeleteSpreadsheet } = useHandleDelete();
+  // const { handleDeleteSpreadsheet } = useHandleDelete();
 
   useEffect(() => {
     if (token) {
@@ -38,28 +39,28 @@ const SheetCards = () => {
   }, [token, fetchSheets]);
 
   // Function to handle delete action
-  const handleDelete = async () => {
-    if (!selectedSheetId || !token) return;
+  // const handleDelete = async () => {
+  //   if (!selectedSheetId || !token) return;
 
-    try {
-      await handleDeleteSpreadsheet(
-        selectedSheetId,
-        () => setWarningModalOpen(false),
-        () => fetchSheets(token),
-      );
-    } catch (error) {
-      console.error("Error deleting spreadsheet:", error);
-    }
-  };
+  //   try {
+  //     await handleDeleteSpreadsheet(
+  //       selectedSheetId,
+  //       () => setWarningModalOpen(false),
+  //       () => fetchSheets(token),
+  //     );
+  //   } catch (error) {
+  //     console.error("Error deleting spreadsheet:", error);
+  //   }
+  // };
 
-  const openModal = (sheetId: string) => {
-    setSelectedSheetId(sheetId);
-    setModalOpen(true);
-  };
+  // const openModal = (sheetId: string) => {
+  //   setSelectedSheetId(sheetId);
+  //   setModalOpen(true);
+  // };
 
-  const openWarningModal = () => {
-    setWarningModalOpen(true);
-  };
+  // const openWarningModal = () => {
+  //   setWarningModalOpen(true);
+  // };
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -75,7 +76,7 @@ const SheetCards = () => {
               </h3>
               <TsaButton
                 className="border-0 px-0 shadow-none"
-                onClick={() => openModal(sheet.id)}
+                // onClick={() => openModal(sheet.id)}
               >
                 <MoreVertical className="h-5 w-5" />
               </TsaButton>
@@ -109,7 +110,7 @@ const SheetCards = () => {
           No sheets available
         </p>
       )}
-      <SheetModal
+      {/* <SheetModal
         open={isModalOpen}
         setOpen={setModalOpen}
         onDelete={openWarningModal}
@@ -120,7 +121,7 @@ const SheetCards = () => {
         isOpen={warningModalOpen}
         onClose={() => setWarningModalOpen(false)}
         onConfirm={handleDelete}
-      />
+      /> */}
     </div>
   );
 };

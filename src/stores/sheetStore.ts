@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import {
   createSpreadsheetAction,
-  deleteSpreadsheetAction,
+  // deleteSpreadsheetAction,
   getSpreadsheetsAction,
   getTotalSheetAction,
 } from "~/action/sheet.actions";
@@ -26,7 +26,7 @@ interface SheetState {
   sheetData: Sheet[];
   fetchSheets: (token: string) => Promise<void>;
   createSheet: (data: { title: string }, token: string) => Promise<void>;
-  deleteSheet: (sheetId: string, token: string) => Promise<void>;
+  // deleteSheet: (sheetId: string, token: string) => Promise<void>;
   totalSheet: number;
   fetchTotalSheets: (token: string) => Promise<void>;
 }
@@ -69,16 +69,16 @@ export const useSheetStore = create<SheetState>((set) => ({
     }
   },
 
-  deleteSheet: async (sheetId, token) => {
-    try {
-      await deleteSpreadsheetAction(sheetId, token);
-      set((state) => ({
-        sheetData: state.sheetData.filter((sheet) => sheet.id !== sheetId),
-      }));
-    } catch (error) {
-      console.error("Failed to delete sheet:", error);
-    }
-  },
+  // deleteSheet: async (sheetId, token) => {
+  //   try {
+  //     await deleteSpreadsheetAction(sheetId, token);
+  //     set((state) => ({
+  //       sheetData: state.sheetData.filter((sheet) => sheet.id !== sheetId),
+  //     }));
+  //   } catch (error) {
+  //     console.error("Failed to delete sheet:", error);
+  //   }
+  // },
 
   fetchTotalSheets: async (token) => {
     try {
