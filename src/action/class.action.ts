@@ -8,7 +8,7 @@ export interface ClassData {
   description: string;
   fee: string;
   startDate: string;
-  endDate: string;
+  // endDate: string;
   courseId: string;
   type: "online" | "weekday" | "weekend";
 }

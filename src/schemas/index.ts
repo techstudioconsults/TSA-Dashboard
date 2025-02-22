@@ -15,7 +15,7 @@ export const classFormSchema = z.object({
   title: z.string().min(1, "Class title is required"),
   fee: z.string().min(1, "Fee is required"),
   startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().min(1, "End date is required"),
+  // endDate: z.string().min(1, "End date is required"),
   course: z.string().min(1, "Course selection is required"),
   type: z.enum(["online", "weekday", "weekend"], {
     required_error: "Please select a preference",
@@ -27,7 +27,7 @@ export const classSubmitFormSchema = z.object({
   title: z.string().min(1, "Class title is required"),
   fee: z.string().min(1, "Fee is required"),
   startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().min(1, "End date is required"),
+  // endDate: z.string().min(1, "End date is required"),
   type: z.enum(["online", "weekday", "weekend"], {
     required_error: "Please select a preference",
   }),
