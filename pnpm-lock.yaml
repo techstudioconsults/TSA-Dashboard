@@ -35,6 +35,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       framer-motion:
         specifier: ^11.11.8
         version: 11.11.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -9642,6 +9645,7 @@ snapshots:
       '@types/jest-axe': 3.5.9
       class-variance-authority: 0.7.0
       clsx: 2.1.1
+      date-fns: 4.1.0
       framer-motion: 11.11.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       google-map-react: 2.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       jest-axe: 9.0.0

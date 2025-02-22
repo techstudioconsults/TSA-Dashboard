@@ -3,8 +3,10 @@
 import { TsaButton } from "@strategic-dot/components";
 import { Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react"; // Add useState
 
 import { NAV_ITEMS } from "~/constants/navigation";
+import CreateSheetModal from "../modals/response-modal/CreateSheetModal";
 
 interface RouteButton {
   label: string;
@@ -29,6 +31,7 @@ const ROUTE_BUTTONS: Record<string, RouteButton> = {
 const TopNav = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const [isCreateSheetModalOpen, setIsCreateSheetModalOpen] = useState(false); // State for modal
 
   const currentNavItem = NAV_ITEMS.find(
     (item) => item.path === pathname || item.subPath === pathname,
@@ -73,6 +76,15 @@ const TopNav = () => {
     </div>
   );
 
+  // Handle Create Sheet button click
+  const handleCreateSheetClick = () => {
+    if (pathname === "/sheets") {
+      setIsCreateSheetModalOpen(true); // Open the modal
+    } else {
+      router.push(routeButton.path); // Navigate to other routes
+    }
+  };
+
   return (
     <section className="border-b bg-white px-8 py-5">
       {isMainRoute ? (
@@ -86,7 +98,7 @@ const TopNav = () => {
               <TsaButton
                 variant="primary"
                 className="bg-mid-blue py-3"
-                onClick={() => router.push(routeButton.path)}
+                onClick={handleCreateSheetClick}
               >
                 {routeButton.label}
               </TsaButton>
@@ -106,6 +118,12 @@ const TopNav = () => {
           </div>
         </header>
       )}
+
+      {/* Render the CreateSheetModal */}
+      <CreateSheetModal
+        isOpen={isCreateSheetModalOpen}
+        onClose={() => setIsCreateSheetModalOpen(false)}
+      />
     </section>
   );
 };

@@ -17,25 +17,36 @@ import {
   TsaButton,
 } from "@strategic-dot/components";
 import { Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { createClassAction } from "~/action/class.action";
+import { updateClassAction } from "~/action/class.action";
 import ConfirmationModal from "~/components/modals/ConfirmationModal";
 import { useFetchData } from "~/hooks/useFetchData";
 import { classFormData, classFormSchema } from "~/schemas";
 import { useAuthStore } from "~/stores/authStore";
+import { useClassStore } from "~/stores/classStore";
 import { useCourseStore } from "~/stores/courseStore";
 
-// interface CreateClassFormProperties {
-//   onCancel: () => void;
-// }
+interface ApiError {
+  status: number;
+  message: string;
+  details?: {
+    message: string;
+    success: boolean;
+  };
+}
 
-const CreateClassForm = () => {
+const EditClassForm = () => {
+  const { token } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const router = useRouter();
+  const parameters = useParams();
+  const id = parameters.id; // Extract class ID from the route
+  const fetchSingleClass = useClassStore((state) => state.fetchSingleClass);
+  const selectedClass = useClassStore((state) => state.selectedClass);
 
   const handleCancelClick = () => {
     setShowCancelModal(true);
@@ -60,41 +71,52 @@ const CreateClassForm = () => {
     },
   });
 
-  // const { courses, fetchCourses } = useCourseStore();
-  const { token } = useAuthStore();
+  // console.log(selectedClass);
+
   const { handleSubmit, formState, control, reset } = formMethods;
   const { errors } = formState;
   const courses = useCourseStore((state) => state.courses);
   const { loading, error } = useFetchData(token);
   const [formError, setFormError] = useState<string | null>(null);
 
-  const onSubmit = async (data: classFormData) => {
-    console.log(data);
-    setIsSubmitting(true);
+  useEffect(() => {
+    if (parameters.id && token && courses) {
+      fetchSingleClass(parameters.id as string, token);
+    }
+  }, [parameters.id, token, fetchSingleClass, courses]);
 
-    if (!token) {
-      // console.error("Token is undefined. Please log in.");
-      router.push("/login");
+  useEffect(() => {
+    if (selectedClass) {
+      reset({
+        title: selectedClass.title,
+        description: selectedClass.description,
+        fee: selectedClass.fee.toString(),
+        startDate: selectedClass.startDate,
+        // endDate: selectedClass.endDate,
+        type: selectedClass.type,
+        course: selectedClass.courseId,
+      });
+    }
+  }, [selectedClass, reset]);
+
+  const onSubmit = async (data: classFormData) => {
+    if (!token || !id) {
+      console.error("User is not authenticated or course ID is missing.");
       return;
     }
+    setIsSubmitting(true);
+    setFormError(null); // Clear previous errors
     try {
-      await createClassAction(
-        {
-          title: data.title,
-          description: data.description,
-          fee: data.fee,
-          startDate: data.startDate,
-          // endDate: data.endDate,
-          type: data.type,
-        },
-        data.course,
-        token,
-      );
-      reset();
-      router.push(`/classes`);
+      await updateClassAction(id as string, data, token);
+      router.push("/classes");
     } catch (error: unknown) {
+      const error_ = error as ApiError;
       console.log(error);
-      setFormError(`Failed to create class: ${error}`);
+      if (error_?.details?.message) {
+        setFormError(error_.details.message);
+      } else {
+        setFormError("An unknown error occurred while updating the class.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -114,8 +136,8 @@ const CreateClassForm = () => {
         isOpen={showCancelModal}
         onClose={() => setShowCancelModal(false)}
         onConfirm={handleConfirmCancel}
-        title="Cancel Class Creation?"
-        description="You have unsaved changes. Are you sure you want to cancel creating this class?"
+        title="Cancel Class Edit?"
+        description="You have unsaved changes. Are you sure you want to cancel editing this class?"
       />
       <div className="py-6">
         <div className="mb-6 flex items-center justify-between">
@@ -140,7 +162,6 @@ const CreateClassForm = () => {
                 "Save Changes"
               )}
             </TsaButton>
-
             <TsaButton
               variant="outline"
               onClick={handleCancelClick}
@@ -222,7 +243,7 @@ const CreateClassForm = () => {
                 )}
               />
 
-              {/* Course */}
+              {/* courses */}
               <FormField
                 name="course"
                 control={control}
@@ -230,7 +251,11 @@ const CreateClassForm = () => {
                   <FormItem>
                     <FormLabel>Course</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        defaultValue={selectedClass?.courseId}
+                      >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Choose a course" />
                         </SelectTrigger>
@@ -261,33 +286,18 @@ const CreateClassForm = () => {
                     <FormLabel>Preference</FormLabel>
                     <FormControl>
                       <div className="flex items-center space-x-4">
-                        <label>
-                          <input
-                            type="radio"
-                            {...field}
-                            value="online"
-                            className="mr-2 h-4 w-4"
-                          />
-                          Online
-                        </label>
-                        <label>
-                          <input
-                            type="radio"
-                            {...field}
-                            value="weekday"
-                            className="mr-2 h-4 w-4"
-                          />
-                          Weekday
-                        </label>
-                        <label>
-                          <input
-                            type="radio"
-                            {...field}
-                            value="weekend"
-                            className="mr-2 h-4 w-4"
-                          />
-                          Weekend
-                        </label>
+                        {["online", "weekday", "weekend"].map((type) => (
+                          <label key={type}>
+                            <input
+                              type="radio"
+                              {...field}
+                              value={type}
+                              checked={field.value === type}
+                              className="mr-2 h-4 w-4"
+                            />
+                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                          </label>
+                        ))}
                       </div>
                     </FormControl>
                     {errors.type && (
@@ -325,4 +335,4 @@ const CreateClassForm = () => {
   );
 };
 
-export default CreateClassForm;
+export default EditClassForm;

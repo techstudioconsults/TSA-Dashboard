@@ -1,135 +1,41 @@
-// import { create } from "zustand";
-
-// import {
-//   ClassData,
-//   createClassAction,
-//   deleteClassAction,
-//   fetchClassesByCourseIdAction,
-//   getClassByIdAction,
-//   updateClassAction,
-// } from "~/action/class.action";
-// import { classFormData } from "~/schemas";
-
-// interface ClassState {
-//   classes: ClassData[];
-//   fetchClasses: (courseId: string, token: string) => Promise<void>;
-//   createClass: (
-//     data: classFormData,
-//     courseId: string,
-//     token: string,
-//   ) => Promise<void>;
-//   getClassById: (id: string, token: string) => Promise<ClassData | undefined>;
-//   deleteClass: (id: string, token: string) => Promise<void>;
-//   updateClass: (
-//     id: string,
-//     data: classFormData,
-//     token: string,
-//   ) => Promise<void>;
-// }
-
-// export const useClassStore = create<ClassState>((set) => ({
-//   classes: [],
-
-//   // Fetch classes for a specific course
-//   fetchClasses: async (courseId, token) => {
-//     try {
-//       const classes = await fetchClassesByCourseIdAction(courseId, token);
-//       set({ classes });
-//     } catch (error) {
-//       console.error("Error fetching classes:", error);
-//     }
-//   },
-
-//   // Create a new class for a specific course
-//   createClass: async (data, courseId, token) => {
-//     try {
-//       await createClassAction(data, courseId, token);
-//       // Refresh the classes list after creation
-//       const classes = await fetchClassesByCourseIdAction(courseId, token);
-//       set({ classes });
-//     } catch (error) {
-//       console.error("Error creating class:", error);
-//       throw error;
-//     }
-//   },
-
-//   // Get a class by its ID
-//   getClassById: async (id, token) => {
-//     try {
-//       return await getClassByIdAction(id, token);
-//     } catch (error) {
-//       console.error("Error fetching class by ID:", error);
-//       return;
-//     }
-//   },
-
-//   // Update a class by its ID
-//   updateClass: async (id, data, token) => {
-//     try {
-//       await updateClassAction(id, data, token);
-//       // Optionally refresh the classes list after update
-//       set((state) => ({
-//         classes: state.classes.map((classItem) =>
-//           classItem.id === id ? { ...classItem, ...data } : classItem,
-//         ),
-//       }));
-//     } catch (error) {
-//       console.error("Error updating class:", error);
-//       throw error;
-//     }
-//   },
-
-//   // Delete a class by its ID
-//   deleteClass: async (id, token) => {
-//     try {
-//       await deleteClassAction(id, token);
-//       // Remove the deleted class from the state
-//       set((state) => ({
-//         classes: state.classes.filter((classItem) => classItem.id !== id),
-//       }));
-//     } catch (error) {
-//       console.error("Error deleting class:", error);
-//       throw error;
-//     }
-//   },
-// }));
-
 import { create } from "zustand";
 
 import {
   ClassData,
   createClassAction,
+  deleteClassAction,
   fetchClassesByCourseIdAction,
+  getSingleClassAction,
+  getTotalCohortsAction,
+  SingleClassData,
+  updateClassAction,
 } from "~/action/class.action";
 import { classFormData } from "~/schemas";
 
-// interface ClassState {
-//   classes: ClassData[];
-//   fetchClasses: (courseId: string, token: string) => Promise<void>;
-//   createClass: (
-//     data: classFormData,
-//     courseId: string,
-//     token: string,
-//   ) => Promise<void>;
-//   // updateClass: (
-//   //   id: string,
-//   //   data: classFormData,
-//   //   token: string,
-//   // ) => Promise<void>;
-//   // deleteClass: (id: string, token: string) => Promise<void>;
-// }
 interface ClassState {
   classes: ClassData[];
+  selectedClass: SingleClassData | null;
   fetchClasses: (courseId: string, token: string) => Promise<void>;
+  fetchSingleClass: (id: string, token: string) => Promise<void>;
   createClass: (
     data: classFormData,
     courseId: string,
     token: string,
   ) => Promise<void>;
+  deleteClass: (id: string, token: string) => Promise<void>;
+  updateClass: (
+    id: string,
+    data: classFormData,
+    token: string,
+  ) => Promise<void>;
+  totalCohorts: number;
+  fetchTotalCohorts: (token: string) => Promise<void>;
 }
 
 export const useClassStore = create<ClassState>((set) => ({
   classes: [],
+  selectedClass: null, // Initialize as null
+  totalCohorts: 0,
 
   fetchClasses: async (courseId, token) => {
     try {
@@ -145,11 +51,47 @@ export const useClassStore = create<ClassState>((set) => ({
       const newClass = await createClassAction(data, courseId, token);
 
       set((state) => ({
-        classes: [...state.classes, newClass], // No TypeScript error now
+        classes: [...state.classes, newClass],
       }));
     } catch (error) {
       console.error("Error creating class:", error);
       throw error;
+    }
+  },
+
+  fetchSingleClass: async (id, token) => {
+    try {
+      const singleClass = await getSingleClassAction(id, token);
+      set({ selectedClass: singleClass });
+    } catch (error) {
+      console.error("Error fetching single class:", error);
+    }
+  },
+
+  deleteClass: async (id, token) => {
+    try {
+      await deleteClassAction(id, token);
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      console.log(error);
+    }
+  },
+
+  updateClass: async (id, data, token) => {
+    try {
+      await updateClassAction(id, data, token);
+    } catch (error) {
+      console.error("Error updating class:", error);
+      console.log(error);
+    }
+  },
+
+  fetchTotalCohorts: async (token) => {
+    try {
+      const total = await getTotalCohortsAction(token);
+      set({ totalCohorts: total });
+    } catch (error) {
+      console.error("Error fetching total cohorts:", error);
     }
   },
 }));

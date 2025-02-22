@@ -5,7 +5,11 @@ const Hero = () => {
     <div className="flex items-center justify-between pt-5">
       <h3 className="text-left">Welcome, Admin</h3>
       <div className="flex gap-4">
-        <TsaButton variant="outline" className="outline-blue-600">
+        <TsaButton
+          href="/sheets"
+          variant="outline"
+          className="outline-blue-600"
+        >
           Create Sheet
         </TsaButton>
 

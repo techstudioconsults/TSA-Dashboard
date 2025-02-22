@@ -1,69 +1,112 @@
 "use client";
 
 import { Calendar, MoreVertical } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 import { ClassData, getClassByIdAction } from "~/action/class.action";
 import { useFetchData } from "~/hooks/useFetchData";
+import { useHandleDelete } from "~/hooks/useHandleDelete";
 import { useAuthStore } from "~/stores/authStore";
 import { useCourseStore } from "~/stores/courseStore";
+import ClassModal from "./ClassModal";
+import WarningModal from "./WarningModal";
 
 const ClassCards = () => {
   const { token } = useAuthStore();
+  const router = useRouter();
+  const { handleDeleteClass } = useHandleDelete();
   const courses = useCourseStore((state) => state.courses);
   const { loading, error } = useFetchData(token);
   const [classes, setClasses] = useState<ClassData[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("");
-  // const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
-  // const [classModalOpen, setClassModalOpen] = useState(false);
+  const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
+  const [classModalOpen, setClassModalOpen] = useState(false);
+  const [warningModalOpen, setWarningModalOpen] = useState(false);
+
+  const fetchClassesForCourse = useCallback(
+    async (courseId: string) => {
+      try {
+        if (token) {
+          const response = await getClassByIdAction(courseId, token);
+          setClasses(response);
+        } else {
+          console.error("Token is undefined");
+        }
+      } catch (error) {
+        console.error("Failed to fetch classes:", error);
+      }
+    },
+    [token],
+  );
 
   useEffect(() => {
     if (courses.length > 0) {
       setActiveCategory(courses[0].title);
       fetchClassesForCourse(courses[0].id);
     }
-  }, [courses]);
-
-  const fetchClassesForCourse = async (courseId: string) => {
-    try {
-      if (token) {
-        const response = await getClassByIdAction(courseId, token);
-        setClasses(response);
-      } else {
-        console.error("Token is undefined");
-      }
-    } catch (error) {
-      console.error("Failed to fetch classes:", error);
-    }
-  };
+  }, [courses, fetchClassesForCourse]);
 
   const handleCategoryChange = (category: string, courseId: string) => {
     setActiveCategory(category);
     fetchClassesForCourse(courseId);
   };
 
-  console.log(classes);
-
   const filteredClasses = classes.filter(
     (c) => c.courseTitle === activeCategory,
   );
 
-  // console.log(filteredClasses);
+  const openClassModal = (classId: string) => {
+    setSelectedClassId(classId);
+    setClassModalOpen(true);
+  };
+
+  const confirmDelete = (courseId: string) => {
+    if (selectedClassId) {
+      handleDeleteClass(
+        selectedClassId,
+        courseId,
+        () => setWarningModalOpen(false),
+        () => fetchClassesForCourse(courseId), // Pass fetchClassesForCourse as a callback
+      );
+    }
+  };
+
+  const getCourseIdForClass = (classId: string): string | undefined => {
+    const classInfo = classes.find((c) => c.id === classId);
+    return classInfo?.courseId; // Assuming `courseId` is a property of `ClassData`
+  };
+
+  if (error) {
+    return <p>Failed to fetch classes</p>;
+  }
 
   if (loading) {
-    return <div className="py-7 text-center"> please wait...</div>;
+    return <p>Loading classes...</p>;
   }
-  if (error) {
-    return <div>Error fetching classes: {error}</div>;
-  }
-
-  // const openClassModal = (classId: string) => {
-  //   console.log(classId);
-  //   setSelectedCourseId(classId);
-  // };
 
   return (
-    <div className="">
+    <>
+      <ClassModal
+        open={classModalOpen}
+        setOpen={setClassModalOpen}
+        onEdit={() => router.push(`classes/${selectedClassId}`)}
+        onDelete={() => {
+          setWarningModalOpen(true); // Open WarningModal when Delete is clicked
+        }}
+      />
+      <WarningModal
+        isOpen={warningModalOpen}
+        onClose={() => setWarningModalOpen(false)} // Close WarningModal
+        onConfirm={() => {
+          const courseId = getCourseIdForClass(selectedClassId!);
+          if (courseId) {
+            confirmDelete(courseId); // Trigger delete function
+          } else {
+            console.error("Course ID not found for the selected class");
+          }
+        }}
+      />
       <div className="flex justify-between">
         {courses.map((course, index) => (
           <button
@@ -94,7 +137,10 @@ const ClassCards = () => {
                 <h3 className="text-lg font-semibold text-indigo-900">
                   {classInfo.courseTitle}
                 </h3>
-                <button className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100">
+                <button
+                  className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100"
+                  onClick={() => openClassModal(classInfo.id)}
+                >
                   <MoreVertical className="h-5 w-5" />
                 </button>
               </div>
@@ -127,7 +173,7 @@ const ClassCards = () => {
           ))
         )}
       </div>
-    </div>
+    </>
   );
 };
 

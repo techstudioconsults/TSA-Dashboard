@@ -22,23 +22,16 @@ const WarningModal: React.FC<WarningModalProperties> = ({
         <div className="flex min-h-screen items-center justify-center text-center sm:items-center sm:p-0">
           <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-md">
             <div className="p-14">
-              <Dialog.Title className="text-center text-2xl font-semibold text-gray-800">
-                Are you sure you want to delete this course?
+              <Dialog.Title className="text-center text-lg font-semibold text-gray-800">
+                Are you sure you want to delete this Sheet? This action cannot
+                be undone.
               </Dialog.Title>
 
               <div className="mx-auto mt-10 flex w-52 flex-col justify-center gap-4">
-                <TsaButton
-                  className="bg-mid-blue py-3"
-                  onClick={onConfirm}
-                  variant="primary"
-                >
+                <TsaButton onClick={onConfirm} variant="primary">
                   Yes
                 </TsaButton>
-                <TsaButton
-                  className="border-red-500 text-red-500"
-                  onClick={onClose}
-                  variant="outline"
-                >
+                <TsaButton onClick={onClose} variant="outline">
                   No
                 </TsaButton>
               </div>

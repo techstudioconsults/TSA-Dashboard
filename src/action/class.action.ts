@@ -8,7 +8,7 @@ export interface ClassData {
   description: string;
   fee: string;
   startDate: string;
-  endDate: string;
+  // endDate: string;
   courseId: string;
   type: "online" | "weekday" | "weekend";
 }
@@ -29,6 +29,17 @@ interface OngoingClassesResponse {
   data: {
     ongoing: ClassData[];
   };
+}
+export interface SingleClassData {
+  id: string;
+  courseId: string;
+  title: string;
+  courseTitle: string;
+  description: string;
+  fee: number;
+  startDate: string;
+  endDate: string;
+  type: "online" | "weekday" | "weekend";
 }
 
 export const createClassAction = async (
@@ -127,5 +138,114 @@ export const getClassByIdAction = async (
     throw {
       message: apiError.message || "An unexpected error occurred.",
     } as APIError;
+  }
+};
+
+// Delete class action
+export const deleteClassAction = async (
+  id: string,
+  token: string,
+): Promise<void> => {
+  try {
+    const response = await fetch(`${BASE_URL}/cohorts/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete course: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error("Error in deleteCourseAction:", error);
+    throw error;
+  }
+};
+
+export const getSingleClassAction = async (
+  id: string,
+  token: string,
+): Promise<SingleClassData> => {
+  try {
+    const response = await fetch(`${BASE_URL}/cohorts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch details for this class: ${response.statusText}`,
+      );
+    }
+
+    const singleClass = (await response.json()) as { data: SingleClassData };
+
+    return {
+      id: singleClass.data.id,
+      courseId: singleClass.data.courseId,
+      courseTitle: singleClass.data.courseTitle,
+      title: singleClass.data.title,
+      description: singleClass.data.description,
+      type: singleClass.data.type,
+      startDate: singleClass.data.startDate,
+      endDate: singleClass.data.endDate,
+      fee: singleClass.data.fee,
+    };
+  } catch (error) {
+    console.error("Error in getSingleClassAction:", error);
+    throw error;
+  }
+};
+
+// Update class action
+export const updateClassAction = async (
+  id: string,
+  data: classFormData,
+  token: string,
+): Promise<void> => {
+  try {
+    const response = await fetch(`${BASE_URL}/cohorts/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      throw {
+        status: response.status,
+        message: errorBody.message || "Failed to update course",
+        details: errorBody,
+      };
+    }
+  } catch (error) {
+    console.error("Error in updateCourseAction:", error);
+    throw error;
+  }
+};
+
+export const getTotalCohortsAction = async (token: string): Promise<number> => {
+  try {
+    const response = await fetch(`${BASE_URL}/cohorts/total`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch total cohorts: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.data.totalCohorts;
+  } catch (error) {
+    console.error("Error in getTotalCohortsAction:", error);
+    throw error;
   }
 };

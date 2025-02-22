@@ -21,7 +21,7 @@ const CourseCards = () => {
   const { loading, error } = useFetchData(token);
 
   const router = useRouter();
-  const { handleDelete } = useHandleDelete();
+  const { handleDeleteCourse } = useHandleDelete();
 
   const openCourseModal = (courseId: string) => {
     setSelectedCourseId(courseId);
@@ -34,7 +34,7 @@ const CourseCards = () => {
 
   const confirmDelete = () => {
     if (selectedCourseId) {
-      handleDelete(selectedCourseId, () => setWarningModalOpen(false));
+      handleDeleteCourse(selectedCourseId, () => setWarningModalOpen(false));
     }
   };
 
@@ -112,13 +112,13 @@ const CourseCards = () => {
                 </span>
               </div>
               <div className="flex items-center">
-                <span className="font-medium text-orange-500">Weekend:</span>
+                <span className="font-medium text-blue-500">Weekend:</span>
                 <span className="ml-1 text-gray-600">
                   {course.duration?.weekend || 0} Weeks
                 </span>
               </div>
               <div className="flex items-center">
-                <span className="font-medium text-green-500">Online:</span>
+                <span className="font-medium text-blue-500">Online:</span>
                 <span className="ml-1 text-gray-600">
                   {course.duration?.online || 0} Weeks
                 </span>
