@@ -1,6 +1,5 @@
 "use client";
 
-import { TsaButton } from "@strategic-dot/components";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect } from "react";
 
@@ -16,14 +15,15 @@ const formatDateTime = (dateString: string): string => {
 };
 
 const RecentTable = () => {
-  const { activities, isLoading, error, fetchActivities } = useActivityStore();
+  const { activities, isLoading, error, fetchActivities, page, totalPages } =
+    useActivityStore();
   const { token } = useAuthStore();
 
   useEffect(() => {
     if (token) {
-      fetchActivities(token);
+      fetchActivities(token, page);
     }
-  }, [fetchActivities, token]);
+  }, [fetchActivities, token, page]);
 
   if (isLoading) {
     return (
@@ -41,15 +41,13 @@ const RecentTable = () => {
     );
   }
 
-  // Add a check for activities existence
-  if (!activities?.data) {
+  if (!activities || activities.length === 0) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-gray-500">No activities found</div>
       </div>
     );
   }
-  console.log(activities);
 
   return (
     <div>
@@ -59,20 +57,6 @@ const RecentTable = () => {
             <h2 className="text-lg font-semibold text-gray-800">
               Recent Activities
             </h2>
-            <div className="flex space-x-3">
-              <TsaButton
-                variant="outline"
-                className="rounded border-gray-600 px-4 py-2 text-gray-600 hover:bg-gray-100"
-              >
-                Filter
-              </TsaButton>
-              <TsaButton
-                variant="outline"
-                className="rounded border-gray-600 px-4 py-2 text-gray-600 hover:bg-gray-100"
-              >
-                Export
-              </TsaButton>
-            </div>
           </div>
         </div>
 
@@ -92,7 +76,7 @@ const RecentTable = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-              {activities.data.map((activity) => (
+              {activities.map((activity) => (
                 <tr key={activity.id} className="hover:bg-gray-50">
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
                     {activity.activity}
@@ -109,19 +93,30 @@ const RecentTable = () => {
           </table>
         </div>
 
+        {/* Pagination Controls */}
         <div className="border-t border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-700">10 Entries per page</p>
             <p className="text-sm text-gray-700">
-              {activities.data.length} Entries shown
+              Page {page} of {totalPages}
             </p>
             <div className="flex space-x-2">
               <button
+                onClick={() => {
+                  if (token) fetchActivities(token, page - 1);
+                }}
+                disabled={page <= 1 || !token} // Added !token check
                 className="rounded px-4 py-2 text-gray-600 hover:bg-gray-100 disabled:opacity-50"
-                disabled
               >
                 Previous
               </button>
-              <button className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+              <button
+                onClick={() => {
+                  if (token) fetchActivities(token, page + 1);
+                }}
+                disabled={page >= totalPages || !token} // Added !token check
+                className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+              >
                 Next
               </button>
             </div>

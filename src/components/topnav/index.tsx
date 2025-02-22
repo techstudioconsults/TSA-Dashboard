@@ -57,7 +57,6 @@ const TopNav = () => {
     <form className="relative hidden md:block" role="search">
       <input
         type="search"
-        disabled="true"
         placeholder="Search..."
         aria-label="Search for courses, classes, students and more"
         className="w-64 rounded-lg border px-4 py-2 pr-10 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 lg:w-96"

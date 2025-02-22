@@ -8,9 +8,11 @@ export interface Activity {
 
 export const getAllActivityAction = async (
   token: string,
-): Promise<Activity[]> => {
+  page: number = 1,
+  limit: number = 10,
+): Promise<{ data: Activity[]; totalPages: number }> => {
   try {
-    const response = await fetch(`${BASE_URL}`, {
+    const response = await fetch(`${BASE_URL}?page=${page}&limit=${limit}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -21,7 +23,11 @@ export const getAllActivityAction = async (
     }
 
     const data = await response.json();
-    return data.data.data;
+    // console.log(data);
+    return {
+      data: data.data.data,
+      totalPages: data.data.metadata.totalPages,
+    };
   } catch (error) {
     console.error("Error in getAllActivityAction:", error);
     throw error;
