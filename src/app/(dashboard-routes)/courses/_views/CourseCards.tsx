@@ -4,6 +4,7 @@ import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import SuccessModal from "~/components/modals/response-modal";
 import { useFetchData } from "~/hooks/useFetchData";
 import { useHandleDelete } from "~/hooks/useHandleDelete";
 import { useAuthStore } from "~/stores/authStore";
@@ -16,10 +17,12 @@ const CourseCards = () => {
   const [courseModalOpen, setCourseModalOpen] = useState(false);
   const [warningModalOpen, setWarningModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const courses = useCourseStore((state) => state.courses);
   const { loading, error } = useFetchData(token);
 
+  // console.log(courses);
   const router = useRouter();
   const { handleDeleteCourse } = useHandleDelete();
 
@@ -35,6 +38,7 @@ const CourseCards = () => {
   const confirmDelete = () => {
     if (selectedCourseId) {
       handleDeleteCourse(selectedCourseId, () => setWarningModalOpen(false));
+      setShowSuccessModal(true);
     }
   };
 
@@ -62,7 +66,10 @@ const CourseCards = () => {
     );
   }
 
-  // console.log(courses);
+  console.log(courses);
+  const handleContinue = () => {
+    setShowSuccessModal(false);
+  };
 
   return (
     <>
@@ -127,6 +134,15 @@ const CourseCards = () => {
           </div>
         ))}
       </div>
+
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Course Deleted Successfully"
+        description="Selected Course has been deleted"
+        actionLabel="Continue"
+        onAction={handleContinue}
+      />
     </>
   );
 };

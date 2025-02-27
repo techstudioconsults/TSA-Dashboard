@@ -43,7 +43,7 @@ export interface SingleClassData {
 }
 
 export const createClassAction = async (
-  data: Omit<classFormData, "course">,
+  data: classFormData,
   courseId: string,
   token: string,
 ): Promise<ClassData> => {

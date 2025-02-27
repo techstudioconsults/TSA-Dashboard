@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react"; // Add useState
 
 import { NAV_ITEMS } from "~/constants/navigation";
-import CreateSheetModal from "../modals/response-modal/CreateSheetModal";
+import CreateSheetModal from "../modals/CreateSheetModal";
 
 interface RouteButton {
   label: string;

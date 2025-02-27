@@ -1,68 +1,69 @@
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  TsaButton,
 } from "@strategic-dot/components";
-import Image from "next/image";
-import React from "react";
+import { Check, X } from "lucide-react";
 
-interface ResponseModalProperties {
+interface SuccessModalProperties {
   isOpen: boolean;
   onClose: () => void;
-  responseMessage: string;
   title?: string;
-  isError: boolean;
-  image?: string;
+  description?: string;
+  actionLabel?: string;
+  onAction?: () => void;
 }
 
-const ResponseModal: React.FC<ResponseModalProperties> = ({
+const SuccessModal: React.FC<SuccessModalProperties> = ({
   isOpen,
   onClose,
-  responseMessage,
-  isError,
-  image,
-  title,
+  title = "Created Successfully",
+  description = "Your item has been created and saved successfully.",
+  actionLabel = "Continue",
+  onAction,
 }) => {
-  const img = isError ? `/gifs/scream.gif` : image || `/images/yes.png`;
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
+      <DialogContent className="max-w-md p-6">
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <DialogHeader className="flex flex-col items-center gap-3">
+          <div className="rounded-full bg-emerald-100 p-6">
+            <div className="rounded-full bg-emerald-500">
+              <Check className="h-12 w-12 p-4 text-white" />
+            </div>
+          </div>
+
           <DialogTitle>
-            <Image
-              className="mx-auto"
-              width={138}
-              height={85}
-              src={img}
-              alt={"image"}
-            />
+            <h2 className="text-center text-xl font-semibold text-gray-900">
+              {title}
+            </h2>
           </DialogTitle>
         </DialogHeader>
-        <div className="text-center">
-          <h5 className="mb-4 text-xl font-bold">
-            {isError ? `Something went wrong` : title}
-          </h5>
-          <p className={isError ? "text-red-600" : ""}>
-            {isError
-              ? responseMessage
-              : `Thank you for contacting us! Our team is reviewing your message and will respond promptly. Feel free to explore our website for more information in the meantime. We appreciate your patience!`}
-          </p>
-        </div>
-        <DialogFooter>
-          <button
-            className={`mt-4 rounded px-4 py-2 text-white ${
-              isError ? "bg-red-600" : "bg-mid-blue"
-            }`}
-            onClick={onClose}
-          >
-            Close this window
-          </button>
-        </DialogFooter>
+
+        <div className="text-center text-sm text-gray-600">{description}</div>
+
+        {onAction && (
+          <div className="mt-6">
+            <TsaButton
+              onClick={onAction}
+              variant="primary"
+              className="w-full bg-blue-600"
+            >
+              {actionLabel}
+            </TsaButton>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
 };
 
-export default ResponseModal;
+export default SuccessModal;

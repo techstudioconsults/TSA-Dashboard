@@ -26,6 +26,14 @@ interface Course {
   createdAt: string;
 }
 
+export interface CreateCourseData {
+  id: string;
+  title: string;
+  description: string;
+  duration: CourseDuration;
+  curriculum: File;
+}
+
 // Response data structure
 interface CourseResponseData {
   data?: Course[];
@@ -61,7 +69,6 @@ export const fetchCoursesAction = async (
 
     const data = (await response.json()) as CourseResponseData;
     const courses = data.data || data.results || [];
-
     return courses.map((course: Course) => ({
       id: course.id,
       title: course.title,
@@ -79,23 +86,59 @@ export const fetchCoursesAction = async (
 };
 
 // Create course action
+// export const createCourseAction = async (
+//   formData: FormData,
+//   token: string,
+// ): Promise<void> => {
+//   try {
+//     const response = await fetch(`${BASE_URL}`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: formData,
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`Failed to create course: ${response.statusText}`);
+//     }
+//     return await response.json();
+//   } catch (error) {
+//     console.error("Error in createCourseAction:", error);
+//     throw error;
+//   }
+// };
+
 export const createCourseAction = async (
-  data: courseFormData,
+  formData: FormData,
   token: string,
-): Promise<void> => {
+): Promise<courseFormData> => {
+  // Update return type
   try {
     const response = await fetch(`${BASE_URL}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
+    // console.log(response)
+
     if (!response.ok) {
-      throw new Error(`Failed to create course: ${response.statusText}`);
+      const errorBody = await response.json();
+      console.log(errorBody);
+      throw {
+        status: response.status,
+        message: errorBody.message || "Failed to create course",
+        details: errorBody,
+      };
     }
+
+    const data: courseFormData = await response.json();
+    console.log(data);
+    return data; // Ensure function returns CourseFormData
   } catch (error) {
     console.error("Error in createCourseAction:", error);
     throw error;
@@ -139,17 +182,16 @@ export const getCourseByIdAction = async (
 // Update course action
 export const updateCourseAction = async (
   id: string,
-  data: courseFormData,
+  formData: FormData,
   token: string,
 ): Promise<void> => {
   try {
     const response = await fetch(`${BASE_URL}/${id}`, {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      body: formData,
     });
 
     if (!response.ok) {

@@ -16,7 +16,7 @@ export const classFormSchema = z.object({
   fee: z.string().min(1, "Fee is required"),
   startDate: z.string().min(1, "Start date is required"),
   // endDate: z.string().min(1, "End date is required"),
-  course: z.string().min(1, "Course selection is required"),
+  courseId: z.string().min(1, "Course selection is required"),
   type: z.enum(["online", "weekday", "weekend"], {
     required_error: "Please select a preference",
   }),
@@ -32,11 +32,16 @@ export const classSubmitFormSchema = z.object({
     required_error: "Please select a preference",
   }),
   description: z.string().min(1, "Description is required"),
+  // courseId: z.string().min(1, "Class title is required"),
+});
+
+export const SheetsFormSchema = z.object({
+  title: z.string().min(1, "Sheet title is required"),
 });
 
 export const CourseFormSchema = z.object({
   title: z.string().min(1, "Course title is required"),
-  description: z.string().min(1, "Description is required"),
+  about: z.string().min(1, "Description is required"),
   onlineDuration: z.number().min(1, "Online Duration must be at least 1 week"),
   weekdayDuration: z
     .number()
@@ -44,10 +49,7 @@ export const CourseFormSchema = z.object({
   weekendDuration: z
     .number()
     .min(1, "Weekend Duration must be at least 1 week"),
-});
-
-export const SheetsFormSchema = z.object({
-  title: z.string().min(1, "Course title is required"),
+  curriculum: z.instanceof(File, { message: "Curriculum file is required" }),
 });
 
 export type courseFormData = z.infer<typeof CourseFormSchema>;

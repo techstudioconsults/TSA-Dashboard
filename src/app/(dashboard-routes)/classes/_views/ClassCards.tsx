@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { ClassData, getClassByIdAction } from "~/action/class.action";
+import SuccessModal from "~/components/modals/response-modal";
 import { useFetchData } from "~/hooks/useFetchData";
 import { useHandleDelete } from "~/hooks/useHandleDelete";
 import { useAuthStore } from "~/stores/authStore";
@@ -23,6 +24,7 @@ const ClassCards = () => {
   const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
   const [classModalOpen, setClassModalOpen] = useState(false);
   const [warningModalOpen, setWarningModalOpen] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const fetchClassesForCourse = useCallback(
     async (courseId: string) => {
@@ -69,6 +71,7 @@ const ClassCards = () => {
         () => setWarningModalOpen(false),
         () => fetchClassesForCourse(courseId), // Pass fetchClassesForCourse as a callback
       );
+      setShowSuccessModal(true);
     }
   };
 
@@ -84,6 +87,9 @@ const ClassCards = () => {
   if (loading) {
     return <p>Loading classes...</p>;
   }
+  const handleContinue = () => {
+    setShowSuccessModal(false);
+  };
 
   return (
     <>
@@ -123,9 +129,9 @@ const ClassCards = () => {
         ))}
       </div>
       <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredClasses.length === 0 && !loading ? (
+        {!loading && filteredClasses.length === 0 ? (
           <div className="col-span-full text-center text-gray-500">
-            <p>No classes available for this course</p>
+            <p>Loading classes for this course...</p>
           </div>
         ) : (
           filteredClasses.map((classInfo, index) => (
@@ -173,6 +179,15 @@ const ClassCards = () => {
           ))
         )}
       </div>
+
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Class Deleted Successfully"
+        description="Selected Class has been deleted"
+        actionLabel="Continue"
+        onAction={handleContinue}
+      />
     </>
   );
 };
