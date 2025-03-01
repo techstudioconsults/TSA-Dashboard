@@ -21,12 +21,18 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (email, password) => {
     const response = await loginAction(email, password);
 
-    if (response.success && response.token) {
+    if (response.success && response.token && response.refreshToken) {
       set({
         isAuthenticated: true,
         token: response.token,
       });
+      // Ensure token and refreshToken are defined before setting cookies
       Cookies.set("authToken", response.token, {
+        expires: 7,
+        secure: true,
+        sameSite: "strict",
+      });
+      Cookies.set("refreshToken", response.refreshToken, {
         expires: 7,
         secure: true,
         sameSite: "strict",
@@ -43,6 +49,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       token: undefined,
     });
     Cookies.remove("authToken");
+    Cookies.remove("refreshToken"); // Also remove the refresh token
   },
 
   hydrateAuthState: () => {

@@ -20,40 +20,34 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { createCourseAction } from "~/action/course.actions";
 import ConfirmationModal from "~/components/modals/ConfirmationModal";
+import SuccessModal from "~/components/modals/response-modal";
 import { courseFormData, CourseFormSchema } from "~/schemas";
 import { useAuthStore } from "~/stores/authStore";
-import { useCourseStore } from "~/stores/courseStore";
 
-// interface CreateCourseFormProperties {
-//   onCancel?: () => void;
-// }
+interface ApiError {
+  message: string;
+  path: string;
+}
 
 const CreateCourseForm = () => {
-  const { createCourse } = useCourseStore();
   const { token } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const router = useRouter();
-
-  const handleCancelClick = () => {
-    setShowCancelModal(true);
-  };
-
-  const handleConfirmCancel = () => {
-    setShowCancelModal(false);
-    router.back(); // Use router to navigate back
-    formMethods.reset();
-  };
 
   const formMethods = useForm<courseFormData>({
     resolver: zodResolver(CourseFormSchema),
     defaultValues: {
       title: "",
-      description: "",
+      about: "",
       onlineDuration: 0,
       weekdayDuration: 0,
       weekendDuration: 0,
+      curriculum: undefined,
     },
   });
 
@@ -65,22 +59,53 @@ const CreateCourseForm = () => {
   } = formMethods;
 
   const onSubmit = async (data: courseFormData) => {
-    // console.log(token);
     if (!token) {
-      // console.error("User is not authenticated");
       router.push("/login");
       return;
     }
+
     setIsSubmitting(true);
+    setFormError(null);
+
     try {
-      await createCourse(data, token);
+      const formData = new FormData();
+
+      for (const [key, value] of Object.entries(data)) {
+        if (typeof value === "number") {
+          formData.append(key, value.toString());
+        } else {
+          formData.append(key, value);
+        }
+      }
+
+      await createCourseAction(formData, token);
       reset();
-      router.push("/courses"); // Adjust the route as needed
-    } catch (error) {
+      setShowSuccessModal(true);
+    } catch (error: unknown) {
+      const error_ = error as ApiError;
       console.error("Failed to create course:", error);
+      setFormError(`An error occurred: ${error_.message}`);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleCancelClick = () => {
+    setShowCancelModal(true);
+  };
+
+  const handleConfirmCancel = () => {
+    setShowCancelModal(false);
+    reset();
+    router.back();
+  };
+
+  const handleViewCourses = () => {
+    // Navigate to the newly created class
+    if (showSuccessModal) {
+      router.push(`/courses`);
+    }
+    setShowSuccessModal(false);
   };
 
   return (
@@ -106,6 +131,7 @@ const CreateCourseForm = () => {
             <p className="text-sm text-gray-500">
               Fill in the fields below to create a new course.
             </p>
+            {formError && <p className="text-red-500">{`${formError}`}</p>}
           </div>
 
           <div className="flex gap-3">
@@ -294,7 +320,7 @@ const CreateCourseForm = () => {
 
             {/* About Course Section */}
             <FormField
-              name="description"
+              name="about"
               control={control}
               render={({ field }) => (
                 <FormItem>
@@ -308,8 +334,40 @@ const CreateCourseForm = () => {
                       className="h-32 w-full rounded-md border px-4 py-2"
                     />
                   </FormControl>
-                  {errors?.description && (
-                    <FormMessage>{errors.description?.message}</FormMessage>
+                  {errors?.about && (
+                    <FormMessage>{errors.about?.message}</FormMessage>
+                  )}
+                </FormItem>
+              )}
+            />
+
+            {/* Curriculum Section */}
+            <FormField
+              name="curriculum"
+              control={control}
+              render={({ field }) => (
+                <FormItem>
+                  <label className="mb-2 block font-semibold text-blue-950">
+                    Curriculum
+                  </label>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={(event_) => {
+                        const file = event_.target.files?.[0];
+                        field.onChange(file);
+                      }}
+                      className="w-full rounded-md border px-4 py-2"
+                    />
+                  </FormControl>
+                  {field.value && (
+                    <p className="mt-2 text-sm text-gray-600">
+                      Selected file: {field.value.name}
+                    </p>
+                  )}
+                  {errors.curriculum && (
+                    <FormMessage>{errors.curriculum?.message}</FormMessage>
                   )}
                 </FormItem>
               )}
@@ -317,6 +375,14 @@ const CreateCourseForm = () => {
           </form>
         </Form>
       </div>
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Created Successfully"
+        description="Course has been created and saved successfully."
+        actionLabel="Continue"
+        onAction={handleViewCourses}
+      />
     </>
   );
 };

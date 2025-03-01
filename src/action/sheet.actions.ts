@@ -1,6 +1,6 @@
 import { SheetFormData } from "~/schemas";
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/spreadsheet`;
+const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/spreadsheets`;
 
 // Create Spreadsheet Action
 export const createSpreadsheetAction = async (
@@ -16,9 +16,15 @@ export const createSpreadsheetAction = async (
       },
       body: JSON.stringify(data),
     });
-    console.log(response);
+    // console.log(response);
     if (!response.ok) {
-      throw new Error(`Failed to create spreadsheet: ${response.statusText}`);
+      const errorBody = await response.json();
+      // console.log(errorBody);
+      throw {
+        status: response.status,
+        message: errorBody.message || "Failed to create course",
+        details: errorBody,
+      };
     }
   } catch (error) {
     console.error("Error in createSpreadsheetAction:", error);
@@ -87,7 +93,7 @@ export const getTotalSheetAction = async (token: string): Promise<number> => {
     }
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
     return data.data.totalSpreadsheet;
   } catch (error) {

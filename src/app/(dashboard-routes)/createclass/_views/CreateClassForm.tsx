@@ -23,15 +23,20 @@ import { useForm } from "react-hook-form";
 
 import { createClassAction } from "~/action/class.action";
 import ConfirmationModal from "~/components/modals/ConfirmationModal";
+import SuccessModal from "~/components/modals/response-modal";
 import { useFetchData } from "~/hooks/useFetchData";
 import { classFormData, classFormSchema } from "~/schemas";
 import { useAuthStore } from "~/stores/authStore";
 import { useCourseStore } from "~/stores/courseStore";
 
-// interface CreateClassFormProperties {
-//   onCancel: () => void;
-// }
-
+interface ApiError {
+  status: number;
+  message: string;
+  details?: {
+    message: string;
+    success: boolean;
+  };
+}
 const CreateClassForm = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
@@ -43,7 +48,7 @@ const CreateClassForm = () => {
 
   const handleConfirmCancel = () => {
     setShowCancelModal(false);
-    router.back(); // Use router to navigate back
+    router.back();
     formMethods.reset();
   };
 
@@ -54,26 +59,25 @@ const CreateClassForm = () => {
       fee: "",
       startDate: "",
       // endDate: "",
-      course: "",
+      courseId: "",
       type: "weekday",
       description: "",
     },
   });
 
-  // const { courses, fetchCourses } = useCourseStore();
   const { token } = useAuthStore();
   const { handleSubmit, formState, control, reset } = formMethods;
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const { errors } = formState;
   const courses = useCourseStore((state) => state.courses);
   const { loading, error } = useFetchData(token);
   const [formError, setFormError] = useState<string | null>(null);
 
   const onSubmit = async (data: classFormData) => {
-    console.log(data);
+    // console.log(data);
     setIsSubmitting(true);
 
     if (!token) {
-      // console.error("Token is undefined. Please log in.");
       router.push("/login");
       return;
     }
@@ -86,18 +90,29 @@ const CreateClassForm = () => {
           startDate: data.startDate,
           // endDate: data.endDate,
           type: data.type,
+          courseId: data.courseId,
         },
-        data.course,
+        data.courseId,
         token,
       );
       reset();
-      router.push(`/classes`);
+      setShowSuccessModal(true);
     } catch (error: unknown) {
-      console.log(error);
-      setFormError(`Failed to create class: ${error}`);
+      const error_ = error as ApiError;
+      // console.log(error);
+      if (error_?.message) {
+        setFormError(error_.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleViewClass = () => {
+    if (showSuccessModal) {
+      router.push(`/classes`);
+    }
+    setShowSuccessModal(false);
   };
 
   if (error) {
@@ -110,13 +125,6 @@ const CreateClassForm = () => {
 
   return (
     <>
-      <ConfirmationModal
-        isOpen={showCancelModal}
-        onClose={() => setShowCancelModal(false)}
-        onConfirm={handleConfirmCancel}
-        title="Cancel Class Creation?"
-        description="You have unsaved changes. Are you sure you want to cancel creating this class?"
-      />
       <div className="py-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -224,7 +232,7 @@ const CreateClassForm = () => {
 
               {/* Course */}
               <FormField
-                name="course"
+                name="courseId"
                 control={control}
                 render={({ field }) => (
                   <FormItem>
@@ -243,8 +251,8 @@ const CreateClassForm = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
-                    {errors.course && (
-                      <FormMessage>{errors.course?.message}</FormMessage>
+                    {errors.courseId && (
+                      <FormMessage>{errors.courseId?.message}</FormMessage>
                     )}
                   </FormItem>
                 )}
@@ -321,6 +329,21 @@ const CreateClassForm = () => {
           </form>
         </Form>
       </div>
+      <ConfirmationModal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleConfirmCancel}
+        title="Cancel Class Creation?"
+        description="You have unsaved changes. Are you sure you want to cancel creating this class?"
+      />
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Created Successfully"
+        description="Class has been created and saved successfully."
+        actionLabel="Continue"
+        onAction={handleViewClass}
+      />
     </>
   );
 };

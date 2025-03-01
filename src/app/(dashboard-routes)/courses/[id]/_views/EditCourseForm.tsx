@@ -20,7 +20,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { updateCourseAction } from "~/action/course.actions";
 import ConfirmationModal from "~/components/modals/ConfirmationModal";
+import SuccessModal from "~/components/modals/response-modal";
 import { courseFormData, CourseFormSchema } from "~/schemas";
 import { useAuthStore } from "~/stores/authStore";
 import { useCourseStore } from "~/stores/courseStore";
@@ -35,13 +37,17 @@ interface ApiError {
 }
 
 const EditCourseForm = () => {
-  const { getCourseById, updateCourse } = useCourseStore();
+  const { getCourseById } = useCourseStore();
   const { token } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [curriculumFileName, setCurriculumFileName] = useState<string | null>(
+    null,
+  );
   const router = useRouter();
   const parameters = useParams();
   const id = parameters.id; // Extract course ID from the route
@@ -60,10 +66,11 @@ const EditCourseForm = () => {
     resolver: zodResolver(CourseFormSchema),
     defaultValues: {
       title: "",
-      description: "",
+      about: "",
       onlineDuration: 0,
       weekdayDuration: 0,
       weekendDuration: 0,
+      curriculum: undefined,
     },
   });
 
@@ -74,7 +81,6 @@ const EditCourseForm = () => {
     formState: { errors },
   } = formMethods;
 
-  // Fetch course details
   useEffect(() => {
     const fetchCourseDetails = async () => {
       if (!token || !id) {
@@ -88,11 +94,21 @@ const EditCourseForm = () => {
         if (course) {
           reset({
             title: course.title,
-            description: course.description,
+            about: course.description,
             onlineDuration: course.duration?.online || 0,
             weekdayDuration: course.duration?.weekday || 0,
             weekendDuration: course.duration?.weekend || 0,
           });
+
+          if (course.curriculum) {
+            let filename = "Current curriculum file";
+            if (typeof course.curriculum === "string") {
+              filename = course.curriculum.split("/").pop() || filename;
+            } else if (course.curriculum instanceof File) {
+              filename = course.curriculum.name;
+            }
+            setCurriculumFileName(filename);
+          }
         }
       } catch {
         setError("Failed to load course details. Please try again.");
@@ -110,23 +126,41 @@ const EditCourseForm = () => {
       return;
     }
     setIsSubmitting(true);
-    setError(null); // Clear previous errors
+    setError(null);
+    // console.log(data);
     try {
-      await updateCourse(id as string, data, token);
-      router.push("/courses");
+      // ✅ Create FormData object
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.about);
+      formData.append("onlineDuration", String(data.onlineDuration));
+      formData.append("weekdayDuration", String(data.weekdayDuration));
+      formData.append("weekendDuration", String(data.weekendDuration));
+      // formData.append("curriculum", data.curriculum);
+      if (data.curriculum instanceof File) {
+        formData.append("curriculum", data.curriculum);
+      }
+
+      await updateCourseAction(id as string, formData, token);
+      reset();
+      setShowSuccessModal(true);
     } catch (error: unknown) {
       const error_ = error as ApiError;
-      console.log(error);
-      if (error_?.details?.message) {
-        setFormError(error_.details.message);
-      } else {
-        setFormError("An unknown error occurred while updating the course.");
-      }
+      // console.error(error);
+      setFormError(`An error occurred while : ${error_.message}`);
+      // console.log(error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const handleViewCourse = () => {
+    // Navigate to course page
+    if (showSuccessModal) {
+      router.push(`/courses`);
+    }
+    setShowSuccessModal(false);
+  };
   if (loading) {
     return <div className="text-center">Loading course details...</div>;
   }
@@ -342,7 +376,7 @@ const EditCourseForm = () => {
 
             {/* Description Field */}
             <FormField
-              name="description"
+              name="about"
               control={control}
               render={({ field }) => (
                 <FormItem>
@@ -356,8 +390,47 @@ const EditCourseForm = () => {
                       className="h-32 w-full rounded-md border px-4 py-2"
                     />
                   </FormControl>
-                  {errors.description && (
-                    <FormMessage>{errors.description?.message}</FormMessage>
+                  {errors.about && (
+                    <FormMessage>{errors.about?.message}</FormMessage>
+                  )}
+                </FormItem>
+              )}
+            />
+
+            {/* curriculum */}
+            <FormField
+              name="curriculum"
+              control={control}
+              render={({ field }) => (
+                <FormItem>
+                  <label className="mb-2 block font-semibold text-blue-950">
+                    Curriculum
+                  </label>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={(event_) => {
+                        const file = event_.target.files?.[0];
+                        field.onChange(file || undefined);
+                      }}
+                      className="w-full rounded-md border px-4 py-2"
+                    />
+                  </FormControl>
+                  {!field.value && curriculumFileName && (
+                    <p className="mt-2 text-sm text-gray-600">
+                      Current file: {curriculumFileName}
+                      <span className="ml-2 text-blue-500">(unchanged)</span>
+                    </p>
+                  )}
+                  {field.value && (
+                    <p className="mt-2 text-sm text-gray-600">
+                      Selected file: {field.value.name}
+                      <span className="ml-2 text-green-500">(new)</span>
+                    </p>
+                  )}
+                  {errors.curriculum && (
+                    <FormMessage>{errors.curriculum.message}</FormMessage>
                   )}
                 </FormItem>
               )}
@@ -365,6 +438,14 @@ const EditCourseForm = () => {
           </form>
         </Form>
       </div>
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Course Updated Successfully"
+        description="Course has been updated and saved successfully."
+        actionLabel="Continue"
+        onAction={handleViewCourse}
+      />
     </>
   );
 };

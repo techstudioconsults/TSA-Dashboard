@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 
 import { updateClassAction } from "~/action/class.action";
 import ConfirmationModal from "~/components/modals/ConfirmationModal";
+import SuccessModal from "~/components/modals/response-modal";
 import { useFetchData } from "~/hooks/useFetchData";
 import { classFormData, classFormSchema } from "~/schemas";
 import { useAuthStore } from "~/stores/authStore";
@@ -42,6 +43,7 @@ const EditClassForm = () => {
   const { token } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const router = useRouter();
   const parameters = useParams();
   const id = parameters.id; // Extract class ID from the route
@@ -65,7 +67,7 @@ const EditClassForm = () => {
       fee: "",
       startDate: "",
       // endDate: "",
-      course: "",
+      courseId: "",
       type: "weekday",
       description: "",
     },
@@ -94,7 +96,7 @@ const EditClassForm = () => {
         startDate: selectedClass.startDate,
         // endDate: selectedClass.endDate,
         type: selectedClass.type,
-        course: selectedClass.courseId,
+        courseId: selectedClass.courseId,
       });
     }
   }, [selectedClass, reset]);
@@ -108,10 +110,11 @@ const EditClassForm = () => {
     setFormError(null); // Clear previous errors
     try {
       await updateClassAction(id as string, data, token);
-      router.push("/classes");
+      // router.push("/classes");
+      setShowSuccessModal(true);
     } catch (error: unknown) {
       const error_ = error as ApiError;
-      console.log(error);
+      // console.log(error);
       if (error_?.details?.message) {
         setFormError(error_.details.message);
       } else {
@@ -120,6 +123,14 @@ const EditClassForm = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleViewClass = () => {
+    // Navigate to the newly created class
+    if (showSuccessModal) {
+      router.push(`/classes`);
+    }
+    setShowSuccessModal(false);
   };
 
   if (error) {
@@ -245,7 +256,7 @@ const EditClassForm = () => {
 
               {/* courses */}
               <FormField
-                name="course"
+                name="courseId"
                 control={control}
                 render={({ field }) => (
                   <FormItem>
@@ -268,8 +279,8 @@ const EditClassForm = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
-                    {errors.course && (
-                      <FormMessage>{errors.course?.message}</FormMessage>
+                    {errors.courseId && (
+                      <FormMessage>{errors.courseId?.message}</FormMessage>
                     )}
                   </FormItem>
                 )}
@@ -331,6 +342,14 @@ const EditClassForm = () => {
           </form>
         </Form>
       </div>
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Class Updated Successfully"
+        description="Class has been updated and saved successfully."
+        actionLabel="Continue"
+        onAction={handleViewClass}
+      />
     </>
   );
 };
