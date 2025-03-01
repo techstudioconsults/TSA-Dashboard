@@ -50,7 +50,7 @@ const EditCourseForm = () => {
   );
   const router = useRouter();
   const parameters = useParams();
-  const id = parameters.id; // Extract course ID from the route
+  const id = parameters.id;
 
   const handleCancelClick = () => {
     setShowCancelModal(true);
@@ -58,7 +58,7 @@ const EditCourseForm = () => {
 
   const handleConfirmCancel = () => {
     setShowCancelModal(false);
-    router.back(); // Use router to navigate back
+    router.back();
     formMethods.reset();
   };
 
