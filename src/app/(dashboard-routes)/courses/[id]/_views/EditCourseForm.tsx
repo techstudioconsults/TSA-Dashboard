@@ -127,7 +127,7 @@ const EditCourseForm = () => {
     }
     setIsSubmitting(true);
     setError(null);
-    console.log(data);
+    // console.log(data);
     try {
       // ✅ Create FormData object
       const formData = new FormData();
@@ -148,7 +148,7 @@ const EditCourseForm = () => {
       const error_ = error as ApiError;
       // console.error(error);
       setFormError(`An error occurred while : ${error_.message}`);
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsSubmitting(false);
     }

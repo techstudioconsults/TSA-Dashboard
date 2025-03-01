@@ -48,7 +48,7 @@ const CreateClassForm = () => {
 
   const handleConfirmCancel = () => {
     setShowCancelModal(false);
-    router.back(); // Use router to navigate back
+    router.back();
     formMethods.reset();
   };
 
@@ -65,7 +65,6 @@ const CreateClassForm = () => {
     },
   });
 
-  // const { courses, fetchCourses } = useCourseStore();
   const { token } = useAuthStore();
   const { handleSubmit, formState, control, reset } = formMethods;
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
@@ -75,11 +74,10 @@ const CreateClassForm = () => {
   const [formError, setFormError] = useState<string | null>(null);
 
   const onSubmit = async (data: classFormData) => {
-    console.log(data);
+    // console.log(data);
     setIsSubmitting(true);
 
     if (!token) {
-      // console.error("Token is undefined. Please log in.");
       router.push("/login");
       return;
     }
@@ -101,7 +99,7 @@ const CreateClassForm = () => {
       setShowSuccessModal(true);
     } catch (error: unknown) {
       const error_ = error as ApiError;
-      console.log(error);
+      // console.log(error);
       if (error_?.message) {
         setFormError(error_.message);
       }
@@ -111,7 +109,6 @@ const CreateClassForm = () => {
   };
 
   const handleViewClass = () => {
-    // Navigate to the newly created class
     if (showSuccessModal) {
       router.push(`/classes`);
     }

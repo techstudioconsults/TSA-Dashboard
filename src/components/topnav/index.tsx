@@ -1,10 +1,11 @@
 "use client";
 
 import { TsaButton } from "@strategic-dot/components";
-import { Search } from "lucide-react";
+import { LogOut, Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react"; // Add useState
+import { useEffect, useRef, useState } from "react";
 
+import { logout } from "~/action/auth.actions";
 import { NAV_ITEMS } from "~/constants/navigation";
 import CreateSheetModal from "../modals/CreateSheetModal";
 
@@ -31,7 +32,9 @@ const ROUTE_BUTTONS: Record<string, RouteButton> = {
 const TopNav = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const [isCreateSheetModalOpen, setIsCreateSheetModalOpen] = useState(false); // State for modal
+  const [isCreateSheetModalOpen, setIsCreateSheetModalOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const profileDropdownReference = useRef<HTMLDivElement>(null);
 
   const currentNavItem = NAV_ITEMS.find(
     (item) => item.path === pathname || item.subPath === pathname,
@@ -43,6 +46,34 @@ const TopNav = () => {
 
   // Check if current path is one of the main routes
   const isMainRoute = ["/courses", "/classes", "/sheets"].includes(pathname);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileDropdownReference.current &&
+        !profileDropdownReference.current.contains(event.target as Node)
+      ) {
+        setIsProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/login");
+      setIsProfileDropdownOpen(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   // Common components
   const TitleSection = (
@@ -66,22 +97,40 @@ const TopNav = () => {
   );
 
   const ProfileSection = (
-    <div className="flex items-center gap-3">
+    <div className="relative" ref={profileDropdownReference}>
       <div
-        className="h-8 w-8 rounded-full bg-gray-200 ring-2 ring-transparent ring-offset-2 transition-all hover:ring-blue-500"
-        role="img"
-        aria-label="Admin profile picture"
-      />
-      <span className="hidden font-medium sm:inline-block">Admin</span>
+        className="flex cursor-pointer items-center gap-3"
+        onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+      >
+        <div
+          className="h-8 w-8 rounded-full bg-gray-200 ring-2 ring-transparent ring-offset-2 transition-all hover:ring-blue-500"
+          role="img"
+          aria-label="Admin profile picture"
+        />
+        <span className="hidden font-medium sm:inline-block">Admin</span>
+      </div>
+
+      {/* Profile dropdown */}
+      {isProfileDropdownOpen && (
+        <div className="absolute right-0 top-full mt-2 w-28 rounded-md border border-gray-200 bg-white shadow-md">
+          <button
+            className="flex w-full items-center gap-2 rounded-md px-4 py-3 text-red-600 hover:bg-gray-100"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-5 w-5 text-red-600" />
+            <span>Logout</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 
   // Handle Create Sheet button click
   const handleCreateSheetClick = () => {
     if (pathname === "/sheets") {
-      setIsCreateSheetModalOpen(true); // Open the modal
+      setIsCreateSheetModalOpen(true);
     } else {
-      router.push(routeButton.path); // Navigate to other routes
+      router.push(routeButton.path);
     }
   };
 

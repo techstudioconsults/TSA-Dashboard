@@ -55,89 +55,6 @@ export const useCourseStore = create<CourseState>((set, get) => ({
     }
   },
 
-  // createCourse: async (formData, token) => {
-  //   try {
-  //     const newCourse = await createCourseAction(formData, token);
-  //     // Get the curriculum file from formData
-  //     const curriculumFile = formData.get("curriculum") as File;
-
-  //     // Add the new course with curriculum to the store
-  //     const courseWithCurriculum = {
-  //       ...newCourse,
-  //       curriculum: curriculumFile,
-  //     };
-
-  //     set({ courses: [...get().courses, courseWithCurriculum] });
-  //     return newCourse;
-  //   } catch (error) {
-  //     console.error("Error creating course:", error);
-  //     throw error;
-  //   }
-  // },
-
-  //   createCourse: async (formData, token) => {
-  //   try {
-  //     const newCourse = await createCourseAction(formData, token);
-  //     const curriculumFile = formData.get("curriculum") as File;
-
-  //     // Ensure courseWithCurriculum includes all required CourseData properties
-  //     const courseWithCurriculum: CourseData = {
-  //       ...newCourse, // Ensure newCourse includes 'id' and 'duration'
-  //       curriculum: curriculumFile,
-  //     };
-
-  //     set({ courses: [...get().courses, courseWithCurriculum] });
-  //     return newCourse;
-  //   } catch (error) {
-  //     console.error("Error creating course:", error);
-  //     throw error;
-  //   }
-  // },
-  // createCourse: async (formData, token) => {
-  //   try {
-  //     const newCourse = await createCourseAction(formData, token);
-  //     const curriculumFile = formData.get("curriculum") as File | null;
-
-  //     // Ensure newCourse has all required properties before assigning to CourseData
-  //     const courseWithCurriculum: CourseData = {
-  //       id: newCourse.id, // Ensure `id` exists
-  //       title: newCourse.title,
-  //       description: newCourse.about, // Ensure `description` matches `about`
-  //       duration: {
-  //         online: newCourse.onlineDuration,
-  //         weekday: newCourse.weekdayDuration,
-  //         weekend: newCourse.weekendDuration,
-  //       },
-  //       curriculum: curriculumFile ?? null, // Assign curriculum if available
-  //     };
-
-  //     set({ courses: [...get().courses, courseWithCurriculum] });
-  //     return newCourse;
-  //   } catch (error) {
-  //     console.error("Error creating course:", error);
-  //     throw error;
-  //   }
-  // },
-
-  // createCourse: async (formData, token) => {
-  //   try {
-  //     const newCourse = await createCourseAction(formData, token);
-  //     const curriculumFile = formData.get("curriculum") as File | null;
-
-  //     // Merge curriculum file into the new course data
-  //     const courseWithCurriculum: courseFormData = {
-  //       ...newCourse,
-  //       curriculum: curriculumFile ?? newCourse.curriculum, // Ensure curriculum is set
-  //     };
-
-  //     set({ courses: [...get().courses, courseWithCurriculum] });
-  //     return newCourse;
-  //   } catch (error) {
-  //     console.error("Error creating course:", error);
-  //     throw error;
-  //   }
-  // },
-
   createCourse: async (formData, token) => {
     try {
       const newCourse = await createCourseAction(formData, token);
@@ -147,7 +64,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
 
       // Transform `courseFormData` into `CourseData`
       const courseWithCurriculum: CourseData = {
-        id: generatedId, // Use generated ID instead of API response
+        id: generatedId,
         title: newCourse.title,
         description: newCourse.about, // Match 'about' to 'description'
         duration: {

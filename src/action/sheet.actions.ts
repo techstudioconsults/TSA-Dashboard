@@ -16,10 +16,10 @@ export const createSpreadsheetAction = async (
       },
       body: JSON.stringify(data),
     });
-    console.log(response);
+    // console.log(response);
     if (!response.ok) {
       const errorBody = await response.json();
-      console.log(errorBody);
+      // console.log(errorBody);
       throw {
         status: response.status,
         message: errorBody.message || "Failed to create course",
@@ -93,7 +93,7 @@ export const getTotalSheetAction = async (token: string): Promise<number> => {
     }
 
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
     return data.data.totalSpreadsheet;
   } catch (error) {

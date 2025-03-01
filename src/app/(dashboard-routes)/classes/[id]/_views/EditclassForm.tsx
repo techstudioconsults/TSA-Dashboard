@@ -114,7 +114,7 @@ const EditClassForm = () => {
       setShowSuccessModal(true);
     } catch (error: unknown) {
       const error_ = error as ApiError;
-      console.log(error);
+      // console.log(error);
       if (error_?.details?.message) {
         setFormError(error_.details.message);
       } else {

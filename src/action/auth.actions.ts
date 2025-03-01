@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 interface LoginResponse {
   success: boolean;
   token?: string;
+  refreshToken?: string;
   error?: string;
 }
 
@@ -27,12 +28,13 @@ export const login = async (
 
     const data = await response.json();
 
-    console.log(data);
+    // console.log(data);
 
     if (data.message === "success") {
       return {
         success: true,
         token: data.data.accessToken,
+        refreshToken: data.data.refreshToken,
       };
     }
 
@@ -48,6 +50,47 @@ export const login = async (
   }
 };
 
-export const logout = () => {
-  Cookies.remove("authToken");
+// export const logout = () => {
+//   Cookies.remove("authToken");
+// };
+
+export const logout = async () => {
+  try {
+    // Retrieve the refreshToken from cookies
+    const refreshToken = Cookies.get("refreshToken");
+
+    if (!refreshToken) {
+      throw new Error("No refresh token found");
+    }
+
+    const response = await fetch(`${BASE_URL}/auth/logout`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("authToken")}`,
+      },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    // console.log(response);
+
+    if (!response.ok) {
+      throw new Error("Logout failed");
+    }
+
+    // Remove tokens from cookies
+    Cookies.remove("authToken");
+    Cookies.remove("refreshToken");
+
+    return {
+      success: true,
+      message: "Logout successful",
+    };
+  } catch (error) {
+    console.error("Logout error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
 };

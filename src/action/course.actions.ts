@@ -128,7 +128,7 @@ export const createCourseAction = async (
 
     if (!response.ok) {
       const errorBody = await response.json();
-      console.log(errorBody);
+      // console.log(errorBody);
       throw {
         status: response.status,
         message: errorBody.message || "Failed to create course",
@@ -231,7 +231,7 @@ export const deleteCourseAction = async (
   }
 };
 
-// total course.actions.ts
+// total course actions
 export const getTotalCourseAction = async (token: string) => {
   try {
     const response = await fetch(`${BASE_URL}/total`, {

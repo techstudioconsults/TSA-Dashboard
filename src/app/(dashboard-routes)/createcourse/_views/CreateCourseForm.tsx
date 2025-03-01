@@ -58,38 +58,6 @@ const CreateCourseForm = () => {
     reset,
   } = formMethods;
 
-  // const onSubmit = async (data: courseFormData) => {
-  //   if (!token) {
-  //     router.push("/login");
-  //     return;
-  //   }
-
-  //   setIsSubmitting(true);
-
-  //   try {
-  //     const formData = new FormData();
-
-  //     for (const [key, value] of Object.entries(data)) {
-  //       if (typeof value === "number") {
-  //         formData.append(key, value.toString()); // Convert number to string
-  //       } else {
-  //         formData.append(key, value); // Append string or File directly
-  //       }
-  //     }
-
-  //     await createCourseAction(formData, token); // Ensure createCourse handles FormData correctly
-  //     reset();
-  //     setShowSuccessModal(true);
-  //   } catch (error: unknown) {
-  //     const error_ = error as ApiError;
-  //     console.log(error_);
-  //     console.error("Failed to create course:", error);
-  //     setFormError(`An error occurred: ${error_.message} `);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
   const onSubmit = async (data: courseFormData) => {
     if (!token) {
       router.push("/login");
@@ -97,7 +65,7 @@ const CreateCourseForm = () => {
     }
 
     setIsSubmitting(true);
-    setFormError(null); // Clear any previous errors
+    setFormError(null);
 
     try {
       const formData = new FormData();
@@ -111,14 +79,12 @@ const CreateCourseForm = () => {
       }
 
       await createCourseAction(formData, token);
-      // Only reset and show success if we reach this point
       reset();
       setShowSuccessModal(true);
     } catch (error: unknown) {
       const error_ = error as ApiError;
       console.error("Failed to create course:", error);
       setFormError(`An error occurred: ${error_.message}`);
-      // Don't reset the form or show success modal
     } finally {
       setIsSubmitting(false);
     }
