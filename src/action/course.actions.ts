@@ -24,15 +24,16 @@ interface Course {
   duration: CourseDuration;
   classCount: ClassCount;
   createdAt: string;
+  curriculum?: File | string | null;
 }
 
-export interface CreateCourseData {
-  id: string;
-  title: string;
-  description: string;
-  duration: CourseDuration;
-  curriculum: File;
-}
+// export interface CreateCourseData {
+//   id: string;
+//   title: string;
+//   description: string;
+//   duration: CourseDuration;
+//   curriculum: File;
+// }
 
 // Response data structure
 interface CourseResponseData {
@@ -41,7 +42,7 @@ interface CourseResponseData {
 }
 
 // Type for the mapped course data returned by fetchCoursesAction
-interface MappedCourseData {
+export interface MappedCourseData {
   id: string;
   title: string;
   description: string;
@@ -50,6 +51,7 @@ interface MappedCourseData {
     weekday: number;
     weekend: number;
   };
+  curriculum?: File | string | null;
 }
 
 // Fetch courses action
@@ -78,6 +80,7 @@ export const fetchCoursesAction = async (
         weekday: course.duration.weekday,
         weekend: course.duration.weekend,
       },
+      curriculum: course.curriculum,
     }));
   } catch (error) {
     console.error("Error in fetchCoursesAction:", error);
@@ -172,6 +175,7 @@ export const getCourseByIdAction = async (
         weekday: course.data.duration.weekday,
         weekend: course.data.duration.weekend,
       },
+      // curriculum: course.data?.curriculum,
     };
   } catch (error) {
     console.error("Error in getCourseByIdAction:", error);
