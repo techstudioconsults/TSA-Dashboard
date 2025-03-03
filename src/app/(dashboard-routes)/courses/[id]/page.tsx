@@ -1,9 +1,10 @@
-import EditCourseForm from "./_views/EditCourseForm";
+// import EditCourseForm from "./_views/EditCourseForm";
 
 const EditCoursePage = () => {
   return (
     <div>
-      <EditCourseForm />
+      <p>Edit Course page</p>
+      {/* <EditCourseForm /> */}
     </div>
   );
 };
