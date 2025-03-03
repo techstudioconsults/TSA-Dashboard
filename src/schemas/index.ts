@@ -49,7 +49,9 @@ export const CourseFormSchema = z.object({
   weekendDuration: z
     .number()
     .min(1, "Weekend Duration must be at least 1 week"),
-  curriculum: z.instanceof(File, { message: "Curriculum file is required" }),
+  curriculum: z
+    .instanceof(File, { message: "Curriculum file is required" })
+    .optional(),
 });
 
 export type courseFormData = z.infer<typeof CourseFormSchema>;
