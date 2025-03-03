@@ -46,7 +46,7 @@ const EditClassForm = () => {
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const router = useRouter();
   const parameters = useParams();
-  const id = parameters.id; // Extract class ID from the route
+  const id = parameters.id;
   const fetchSingleClass = useClassStore((state) => state.fetchSingleClass);
   const selectedClass = useClassStore((state) => state.selectedClass);
 
@@ -56,7 +56,7 @@ const EditClassForm = () => {
 
   const handleConfirmCancel = () => {
     setShowCancelModal(false);
-    router.back(); // Use router to navigate back
+    router.back();
     formMethods.reset();
   };
 
@@ -72,8 +72,6 @@ const EditClassForm = () => {
       description: "",
     },
   });
-
-  // console.log(selectedClass);
 
   const { handleSubmit, formState, control, reset } = formMethods;
   const { errors } = formState;
