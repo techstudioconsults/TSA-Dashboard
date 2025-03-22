@@ -92,6 +92,8 @@ const EditCourseForm = () => {
 
       try {
         const course = await getCourseByIdAction(id as string, token);
+        console.log(course);
+
         if (course) {
           reset({
             title: course.title,

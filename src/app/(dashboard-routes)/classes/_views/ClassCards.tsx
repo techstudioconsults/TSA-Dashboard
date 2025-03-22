@@ -4,7 +4,7 @@ import { Calendar, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-import { ClassData, getClassByIdAction } from "~/action/class.action";
+import { ClassData, fetchClassesByCourseIdAction } from "~/action/class.action";
 import SuccessModal from "~/components/modals/response-modal";
 import { useFetchData } from "~/hooks/useFetchData";
 import { useHandleDelete } from "~/hooks/useHandleDelete";
@@ -30,7 +30,7 @@ const ClassCards = () => {
     async (courseId: string) => {
       try {
         if (token) {
-          const response = await getClassByIdAction(courseId, token);
+          const response = await fetchClassesByCourseIdAction(courseId, token);
           setClasses(response);
         } else {
           console.error("Token is undefined");
@@ -54,9 +54,14 @@ const ClassCards = () => {
     fetchClassesForCourse(courseId);
   };
 
-  const filteredClasses = classes.filter(
-    (c) => c.courseTitle === activeCategory,
-  );
+  // const filteredClasses = classes.filter((c) => c.title === activeCategory);
+
+  // const selectedCourse = courses.find(
+  //   (course) => course.title === activeCategory,
+  // );
+  // const filteredClasses = selectedCourse
+  //   ? classes.filter((c) => c.courseId === selectedCourse.id)
+  //   : [];
 
   const openClassModal = (classId: string) => {
     setSelectedClassId(classId);
@@ -77,7 +82,7 @@ const ClassCards = () => {
 
   const getCourseIdForClass = (classId: string): string | undefined => {
     const classInfo = classes.find((c) => c.id === classId);
-    return classInfo?.courseId; // Assuming `courseId` is a property of `ClassData`
+    return classInfo?.course.id;
   };
 
   if (error) {
@@ -129,19 +134,19 @@ const ClassCards = () => {
         ))}
       </div>
       <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-2 lg:grid-cols-3">
-        {!loading && filteredClasses.length === 0 ? (
+        {!loading && classes.length === 0 ? (
           <div className="col-span-full text-center text-gray-500">
-            <p>Loading classes for this course...</p>
+            <p className="py-10">Opps... No class available for this course</p>
           </div>
         ) : (
-          filteredClasses.map((classInfo, index) => (
+          classes.map((classInfo, index) => (
             <div
               key={index}
               className="rounded-lg bg-white p-6 transition-shadow hover:shadow-md"
             >
               <div className="mb-4 flex items-start justify-between">
                 <h3 className="text-lg font-semibold text-indigo-900">
-                  {classInfo.courseTitle}
+                  {classInfo.title}
                 </h3>
                 <button
                   className="rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-100"

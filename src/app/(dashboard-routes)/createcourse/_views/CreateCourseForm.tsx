@@ -84,6 +84,7 @@ const CreateCourseForm = () => {
     } catch (error: unknown) {
       const error_ = error as ApiError;
       console.error("Failed to create course:", error);
+      console.log(error_.message);
       setFormError(`An error occurred: ${error_.message}`);
     } finally {
       setIsSubmitting(false);

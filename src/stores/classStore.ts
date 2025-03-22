@@ -46,9 +46,9 @@ export const useClassStore = create<ClassState>((set) => ({
     }
   },
 
-  createClass: async (data, courseId, token) => {
+  createClass: async (data, token) => {
     try {
-      const newClass = await createClassAction(data, courseId, token);
+      const newClass = await createClassAction(data, token);
 
       set((state) => ({
         classes: [...state.classes, newClass],

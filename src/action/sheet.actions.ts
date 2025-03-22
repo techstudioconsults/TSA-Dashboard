@@ -47,7 +47,9 @@ export const getSpreadsheetsAction = async (token: string) => {
     }
 
     const data = await response.json();
-    return data.data?.data || []; // Ensure we extract the correct array
+    console.log(data);
+
+    return data.data?.items || []; // Ensure we extract the correct array
   } catch (error) {
     console.error("Error in getSpreadsheetsAction:", error);
     throw error;

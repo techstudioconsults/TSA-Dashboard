@@ -20,7 +20,7 @@ interface ClassCount {
 interface Course {
   id: string;
   title: string;
-  description: string;
+  about: string;
   duration: CourseDuration;
   classCount: ClassCount;
   createdAt: string;
@@ -37,7 +37,9 @@ interface Course {
 
 // Response data structure
 interface CourseResponseData {
-  data?: Course[];
+  data?: {
+    items?: Course[];
+  };
   results?: Course[];
 }
 
@@ -70,11 +72,12 @@ export const fetchCoursesAction = async (
     }
 
     const data = (await response.json()) as CourseResponseData;
-    const courses = data.data || data.results || [];
+    // console.log(data);
+    const courses = data.data?.items || [];
     return courses.map((course: Course) => ({
       id: course.id,
       title: course.title,
-      description: course.description,
+      description: course.about,
       duration: {
         online: course.duration.online,
         weekday: course.duration.weekday,
@@ -140,7 +143,7 @@ export const createCourseAction = async (
     }
 
     const data: courseFormData = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Ensure function returns CourseFormData
   } catch (error) {
     console.error("Error in createCourseAction:", error);
@@ -169,13 +172,13 @@ export const getCourseByIdAction = async (
     return {
       id: course.data.id,
       title: course.data.title,
-      description: course.data.description,
+      description: course.data.about,
       duration: {
         online: course.data.duration.online,
         weekday: course.data.duration.weekday,
         weekend: course.data.duration.weekend,
       },
-      // curriculum: course.data?.curriculum,
+      curriculum: course.data?.curriculum,
     };
   } catch (error) {
     console.error("Error in getCourseByIdAction:", error);

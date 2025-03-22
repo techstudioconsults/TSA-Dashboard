@@ -4,7 +4,9 @@ const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
 export interface ClassData {
   id: string;
+  course: { id: string };
   courseTitle: string;
+  title: string;
   description: string;
   fee: string;
   startDate: string;
@@ -20,16 +22,23 @@ interface APIError {
 }
 
 interface APIResponse<T> {
+  success: boolean;
   data: T;
   message?: string;
   errors?: Record<string, unknown>;
 }
 
-interface OngoingClassesResponse {
-  data: {
-    ongoing: ClassData[];
-  };
+interface getClassResponse {
+  success: boolean;
+  data: { items: ClassData[] };
+  message?: string;
+  errors?: Record<string, unknown>;
 }
+// interface OngoingClassesResponse {
+//   data: {
+//     ongoing: ClassData[];
+//   };
+// }
 export interface SingleClassData {
   id: string;
   courseId: string;
@@ -38,18 +47,18 @@ export interface SingleClassData {
   description: string;
   fee: number;
   startDate: string;
-  endDate: string;
+  // endDate: string;
   type: "online" | "weekday" | "weekend";
 }
 
 export const createClassAction = async (
   data: classFormData,
-  courseId: string,
   token: string,
+  // courseId: string,
 ): Promise<ClassData> => {
   // Now returns ClassData
   try {
-    const response = await fetch(`${BASE_URL}/cohorts/courses/${courseId}`, {
+    const response = await fetch(`${BASE_URL}/cohorts`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -84,14 +93,14 @@ export const fetchClassesByCourseIdAction = async (
   token: string,
 ): Promise<ClassData[]> => {
   try {
-    const response = await fetch(`${BASE_URL}/cohorts/courses/${courseId}`, {
+    const response = await fetch(`${BASE_URL}/cohorts?courseId=${courseId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    const responseData: APIResponse<ClassData[]> = await response.json();
+    const responseData: getClassResponse = await response.json();
 
     if (!response.ok) {
       throw {
@@ -100,7 +109,7 @@ export const fetchClassesByCourseIdAction = async (
       } as APIError;
     }
 
-    return responseData.data;
+    return responseData.data?.items;
   } catch (error) {
     const apiError = error as APIError;
     console.error("Error in fetchClassesByCourseIdAction:", apiError);
@@ -110,38 +119,41 @@ export const fetchClassesByCourseIdAction = async (
   }
 };
 
-export const getClassByIdAction = async (
-  courseId: string,
-  token: string,
-): Promise<ClassData[]> => {
-  try {
-    const response = await fetch(`${BASE_URL}/cohorts/courses/${courseId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+// export const getClassByIdAction = async (
+//   courseId: string,
+//   token: string,
+// ): Promise<ClassData[]> => {
+//   try {
+//     const response = await fetch(`${BASE_URL}/cohorts?courseId=${courseId}`, {
+//       method: "GET",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json",
+//       },
+//     });
+//     const responseData: getClassResponse = await response.json();
 
-    const responseData: OngoingClassesResponse = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        message: "Failed to fetch classes",
-      } as APIError;
-    }
+//     // console.log(responseData);
 
-    return responseData.data.ongoing;
-  } catch (error) {
-    const apiError = error as APIError;
-    console.error("Error fetching classes by course:", apiError);
-    throw {
-      message: apiError.message || "An unexpected error occurred.",
-    } as APIError;
-  }
-};
+//     if (!response.ok) {
+//       throw {
+//         status: response.status,
+//         message: "Failed to fetch classes",
+//       } as APIError;
+//     }
+
+//     return responseData.data?.items;
+//   } catch (error) {
+//     const apiError = error as APIError;
+//     console.error("Error fetching classes by course:", apiError);
+//     throw {
+//       message: apiError.message || "An unexpected error occurred.",
+//     } as APIError;
+//   }
+// };
 
 // Delete class action
+
 export const deleteClassAction = async (
   id: string,
   token: string,
@@ -181,17 +193,19 @@ export const getSingleClassAction = async (
       );
     }
 
-    const singleClass = (await response.json()) as { data: SingleClassData };
+    const singleClass = (await response.json()) as {
+      data: SingleClassData & { course: { id: string } };
+    };
 
     return {
       id: singleClass.data.id,
-      courseId: singleClass.data.courseId,
+      courseId: singleClass.data.course.id,
       courseTitle: singleClass.data.courseTitle,
       title: singleClass.data.title,
       description: singleClass.data.description,
       type: singleClass.data.type,
       startDate: singleClass.data.startDate,
-      endDate: singleClass.data.endDate,
+      // endDate: singleClass.data.endDate,
       fee: singleClass.data.fee,
     };
   } catch (error) {

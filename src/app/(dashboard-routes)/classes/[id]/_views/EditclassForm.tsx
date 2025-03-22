@@ -50,6 +50,8 @@ const EditClassForm = () => {
   const fetchSingleClass = useClassStore((state) => state.fetchSingleClass);
   const selectedClass = useClassStore((state) => state.selectedClass);
 
+  console.log(selectedClass);
+
   const handleCancelClick = () => {
     setShowCancelModal(true);
   };
