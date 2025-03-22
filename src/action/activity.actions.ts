@@ -23,9 +23,9 @@ export const getAllActivityAction = async (
     }
 
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     return {
-      data: data.data.data,
+      data: data.data.items,
       totalPages: data.data.metadata.totalPages,
     };
   } catch (error) {

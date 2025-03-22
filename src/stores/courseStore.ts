@@ -90,7 +90,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
         // Return the course with null curriculum since API doesn't return it
         return {
           ...course,
-          curriculum: null,
+          // curriculum: null,
         };
       }
       return;

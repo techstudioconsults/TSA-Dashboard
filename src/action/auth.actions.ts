@@ -26,15 +26,15 @@ export const login = async (
       throw new Error("Login failed");
     }
 
-    const data = await response.json();
+    const resultData = await response.json();
 
-    // console.log(data);
+    console.log(resultData);
 
-    if (data.message === "success") {
+    if (resultData.message === "success") {
       return {
         success: true,
-        token: data.data.accessToken,
-        refreshToken: data.data.refreshToken,
+        token: resultData.data.tokens.access,
+        refreshToken: resultData.data.tokens.refresh,
       };
     }
 
@@ -43,6 +43,7 @@ export const login = async (
       error: "Unexpected response from the server",
     };
   } catch (error) {
+    console.log(error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

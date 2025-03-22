@@ -92,8 +92,8 @@ const CreateClassForm = () => {
           type: data.type,
           courseId: data.courseId,
         },
-        data.courseId,
         token,
+        // data.courseId,
       );
       reset();
       setShowSuccessModal(true);

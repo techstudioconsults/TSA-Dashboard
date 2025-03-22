@@ -22,7 +22,6 @@ const CourseCards = () => {
   const courses = useCourseStore((state) => state.courses);
   const { loading, error } = useFetchData(token);
 
-  // console.log(courses);
   const router = useRouter();
   const { handleDeleteCourse } = useHandleDelete();
 
@@ -66,7 +65,6 @@ const CourseCards = () => {
     );
   }
 
-  console.log(courses);
   const handleContinue = () => {
     setShowSuccessModal(false);
   };
