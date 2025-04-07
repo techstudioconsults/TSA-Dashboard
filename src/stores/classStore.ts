@@ -73,7 +73,6 @@ export const useClassStore = create<ClassState>((set) => ({
       await deleteClassAction(id, token);
     } catch (error) {
       console.error("Error deleting course:", error);
-      console.log(error);
     }
   },
 
@@ -82,7 +81,6 @@ export const useClassStore = create<ClassState>((set) => ({
       await updateClassAction(id, data, token);
     } catch (error) {
       console.error("Error updating class:", error);
-      console.log(error);
     }
   },
 

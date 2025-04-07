@@ -26,7 +26,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         isAuthenticated: true,
         token: response.token,
       });
-      // Ensure token and refreshToken are defined before setting cookies
       Cookies.set("authToken", response.token, {
         expires: 7,
         secure: true,

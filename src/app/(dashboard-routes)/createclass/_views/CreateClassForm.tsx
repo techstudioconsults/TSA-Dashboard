@@ -74,7 +74,6 @@ const CreateClassForm = () => {
   const [formError, setFormError] = useState<string | null>(null);
 
   const onSubmit = async (data: classFormData) => {
-    // console.log(data);
     setIsSubmitting(true);
 
     if (!token) {
@@ -99,7 +98,6 @@ const CreateClassForm = () => {
       setShowSuccessModal(true);
     } catch (error: unknown) {
       const error_ = error as ApiError;
-      // console.log(error);
       if (error_?.message) {
         setFormError(error_.message);
       }

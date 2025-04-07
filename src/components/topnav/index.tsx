@@ -1,6 +1,7 @@
 "use client";
 
 import { TsaButton } from "@strategic-dot/components";
+import Cookies from "js-cookie";
 import { LogOut, Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -68,6 +69,8 @@ const TopNav = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      Cookies.remove("authToken");
+      Cookies.remove("refreshToken");
       router.push("/login");
       setIsProfileDropdownOpen(false);
     } catch (error) {

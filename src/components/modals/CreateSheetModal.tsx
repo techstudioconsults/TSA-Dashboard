@@ -61,7 +61,7 @@ const CreateSheetModal: React.FC<CreateSheetModalProperties> = ({
       await createSheet(data, token);
       reset();
       onClose();
-      // router.push("/sheets");
+      router.push("/sheets");
       setShowSuccessModal(true);
     } catch (error: unknown) {
       const error_ = error as ApiError;
@@ -95,6 +95,7 @@ const CreateSheetModal: React.FC<CreateSheetModalProperties> = ({
           )}
 
           <form onSubmit={handleSubmit(onSubmitHandler)}>
+            {sheetError && <p>{sheetError}</p>}
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium">
                 Sheet Name
