@@ -19,7 +19,7 @@ export const createSpreadsheetAction = async (
     // console.log(response);
     if (!response.ok) {
       const errorBody = await response.json();
-      // console.log(errorBody);
+      console.log(errorBody);
       throw {
         status: response.status,
         message: errorBody.message || "Failed to create course",

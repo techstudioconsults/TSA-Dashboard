@@ -4,12 +4,8 @@ import { TsaButton } from "@strategic-dot/components";
 import { Calendar, MoreVertical, User } from "lucide-react";
 import { useEffect } from "react";
 
-// import { useHandleDelete } from "~/hooks/useHandleDelete";
 import { useAuthStore } from "~/stores/authStore";
 import { useSheetStore } from "~/stores/sheetStore";
-
-// import SheetModal from "./SheetModal";
-// import WarningModal from "./WarningModal";
 
 // Function to format the date
 const formatDate = (timestamp: string) => {
@@ -26,41 +22,11 @@ const SheetCards = () => {
   const sheetData = useSheetStore((state) => state.sheetData);
   const fetchSheets = useSheetStore((state) => state.fetchSheets);
 
-  // const [isModalOpen, setModalOpen] = useState(false);
-  // const [warningModalOpen, setWarningModalOpen] = useState(false);
-  // const [selectedSheetId, setSelectedSheetId] = useState<string | null>(null);
-
-  // const { handleDeleteSpreadsheet } = useHandleDelete();
-
   useEffect(() => {
     if (token) {
       fetchSheets(token);
     }
   }, [token, fetchSheets]);
-
-  // Function to handle delete action
-  // const handleDelete = async () => {
-  //   if (!selectedSheetId || !token) return;
-
-  //   try {
-  //     await handleDeleteSpreadsheet(
-  //       selectedSheetId,
-  //       () => setWarningModalOpen(false),
-  //       () => fetchSheets(token),
-  //     );
-  //   } catch (error) {
-  //     console.error("Error deleting spreadsheet:", error);
-  //   }
-  // };
-
-  // const openModal = (sheetId: string) => {
-  //   setSelectedSheetId(sheetId);
-  //   setModalOpen(true);
-  // };
-
-  // const openWarningModal = () => {
-  //   setWarningModalOpen(true);
-  // };
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -114,7 +80,7 @@ const SheetCards = () => {
         open={isModalOpen}
         setOpen={setModalOpen}
         onDelete={openWarningModal}
-        onEdit={() => console.log("Edit action triggered")}
+        onEdit={}
       />
 
       <WarningModal

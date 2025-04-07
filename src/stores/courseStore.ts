@@ -44,7 +44,6 @@ export const useCourseStore = create<CourseState>((set, get) => ({
   fetchCourses: async (token) => {
     try {
       const courses = await fetchCoursesAction(token);
-      // Add null curriculum to each course to match CourseData interface
       const coursesWithCurriculum = courses.map((course) => ({
         ...course,
         curriculum: null,
@@ -62,17 +61,16 @@ export const useCourseStore = create<CourseState>((set, get) => ({
 
       const generatedId = crypto.randomUUID();
 
-      // Transform `courseFormData` into `CourseData`
       const courseWithCurriculum: CourseData = {
         id: generatedId,
         title: newCourse.title,
-        description: newCourse.about, // Match 'about' to 'description'
+        description: newCourse.about,
         duration: {
           online: newCourse.onlineDuration,
           weekday: newCourse.weekdayDuration,
           weekend: newCourse.weekendDuration,
         },
-        curriculum: curriculumFile, // Store the uploaded file locally
+        curriculum: curriculumFile,
       };
 
       set({ courses: [...get().courses, courseWithCurriculum] });
@@ -87,7 +85,6 @@ export const useCourseStore = create<CourseState>((set, get) => ({
     try {
       const course = await getCourseByIdAction(id, token);
       if (course) {
-        // Return the course with null curriculum since API doesn't return it
         return {
           ...course,
           // curriculum: null,

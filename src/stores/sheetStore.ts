@@ -69,17 +69,6 @@ export const useSheetStore = create<SheetState>((set) => ({
     }
   },
 
-  // deleteSheet: async (sheetId, token) => {
-  //   try {
-  //     await deleteSpreadsheetAction(sheetId, token);
-  //     set((state) => ({
-  //       sheetData: state.sheetData.filter((sheet) => sheet.id !== sheetId),
-  //     }));
-  //   } catch (error) {
-  //     console.error("Failed to delete sheet:", error);
-  //   }
-  // },
-
   fetchTotalSheets: async (token) => {
     try {
       const total = await getTotalSheetAction(token);
@@ -89,3 +78,14 @@ export const useSheetStore = create<SheetState>((set) => ({
     }
   },
 }));
+
+// deleteSheet: async (sheetId, token) => {
+//   try {
+//     await deleteSpreadsheetAction(sheetId, token);
+//     set((state) => ({
+//       sheetData: state.sheetData.filter((sheet) => sheet.id !== sheetId),
+//     }));
+//   } catch (error) {
+//     console.error("Failed to delete sheet:", error);
+//   }
+// },

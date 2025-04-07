@@ -40,7 +40,6 @@ const SuccessModal: React.FC<SuccessModalProperties> = ({
               <Check className="h-12 w-12 p-4 text-white" />
             </div>
           </div>
-
           <DialogTitle>
             <h2 className="text-center text-xl font-semibold text-gray-900">
               {title}

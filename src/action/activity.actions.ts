@@ -1,4 +1,4 @@
-const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/activity`;
+const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/activities`;
 export interface Activity {
   id: string;
   activity: string;

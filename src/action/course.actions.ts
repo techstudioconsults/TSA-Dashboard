@@ -27,14 +27,6 @@ interface Course {
   curriculum?: File | string | null;
 }
 
-// export interface CreateCourseData {
-//   id: string;
-//   title: string;
-//   description: string;
-//   duration: CourseDuration;
-//   curriculum: File;
-// }
-
 // Response data structure
 interface CourseResponseData {
   data?: {
