@@ -56,32 +56,6 @@ export const getSpreadsheetsAction = async (token: string) => {
   }
 };
 
-// Delete Spreadsheet Action
-// export const deleteSpreadsheetAction = async (
-//   sheetId: string,
-//   token: string,
-// ): Promise<void> => {
-//   try {
-//     console.log(sheetId);
-
-//     const response = await fetch(`${BASE_URL}/${sheetId}`, {
-//       method: "DELETE",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     const responseData = await response.json();
-//     console.log(responseData);
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to delete spreadsheet: ${response.statusText}`);
-//     }
-//   } catch (error) {
-//     console.error("Error in deleteSpreadsheetAction:", error);
-//     throw error;
-//   }
-// };
-
 export const getTotalSheetAction = async (token: string): Promise<number> => {
   try {
     const response = await fetch(`${BASE_URL}/total`, {
@@ -95,7 +69,11 @@ export const getTotalSheetAction = async (token: string): Promise<number> => {
     }
 
     const data = await response.json();
-    // console.log(data);
+
+    // Add validation for response structure
+    if (typeof data.data?.totalSpreadsheet !== "number") {
+      throw new TypeError("Invalid total spreadsheet count format");
+    }
 
     return data.data.totalSpreadsheet;
   } catch (error) {

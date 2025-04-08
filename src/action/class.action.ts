@@ -34,11 +34,7 @@ interface getClassResponse {
   message?: string;
   errors?: Record<string, unknown>;
 }
-// interface OngoingClassesResponse {
-//   data: {
-//     ongoing: ClassData[];
-//   };
-// }
+
 export interface SingleClassData {
   id: string;
   courseId: string;
@@ -119,41 +115,7 @@ export const fetchClassesByCourseIdAction = async (
   }
 };
 
-// export const getClassByIdAction = async (
-//   courseId: string,
-//   token: string,
-// ): Promise<ClassData[]> => {
-//   try {
-//     const response = await fetch(`${BASE_URL}/cohorts?courseId=${courseId}`, {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//       },
-//     });
-//     const responseData: getClassResponse = await response.json();
-
-//     // console.log(responseData);
-
-//     if (!response.ok) {
-//       throw {
-//         status: response.status,
-//         message: "Failed to fetch classes",
-//       } as APIError;
-//     }
-
-//     return responseData.data?.items;
-//   } catch (error) {
-//     const apiError = error as APIError;
-//     console.error("Error fetching classes by course:", apiError);
-//     throw {
-//       message: apiError.message || "An unexpected error occurred.",
-//     } as APIError;
-//   }
-// };
-
 // Delete class action
-
 export const deleteClassAction = async (
   id: string,
   token: string,
