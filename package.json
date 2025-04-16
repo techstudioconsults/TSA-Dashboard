@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start:staging": "next start -p 7001",
+    "start:prod": "next start -p 7000",
     "lint": "next lint",
     "c:test": "cypress open",
     "v:test": "vitest",
