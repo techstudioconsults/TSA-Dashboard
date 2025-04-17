@@ -34,7 +34,7 @@ export const login = async (
 
     const resultData = await response.json();
 
-    console.log(resultData);
+    // console.log(resultData);
 
     if (resultData.message === "success") {
       return {
