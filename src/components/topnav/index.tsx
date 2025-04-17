@@ -1,6 +1,6 @@
 "use client";
 
-import { TsaButton } from "@strategic-dot/components";
+import { Input, TsaButton } from "@strategic-dot/components";
 import Cookies from "js-cookie";
 import { LogOut, Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -89,11 +89,11 @@ const TopNav = () => {
 
   const SearchSection = (
     <form className="relative hidden md:block" role="search">
-      <input
+      <Input
         type="search"
         placeholder="Search..."
         aria-label="Search for courses, classes, students and more"
-        className="w-64 rounded-lg border px-4 py-2 pr-10 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 lg:w-96"
+        className="w-64 cursor-not-allowed rounded-lg border px-4 py-2 pr-10 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 lg:w-96"
       />
       <Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
     </form>

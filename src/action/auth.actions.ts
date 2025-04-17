@@ -92,9 +92,6 @@ export const logout = async () => {
     };
   } catch (error) {
     console.error("Logout error:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
+    throw error;
   }
 };
