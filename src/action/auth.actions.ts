@@ -7,6 +7,12 @@ interface LoginResponse {
   error?: string;
 }
 
+// interface APIError {
+//   status?: number;
+//   message: string;
+//   details?: Record<string, unknown>;
+// }
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const login = async (
@@ -23,7 +29,7 @@ export const login = async (
     });
 
     if (!response.ok) {
-      throw new Error("Login failed");
+      throw new Error(`Login failed: ${response.statusText}`);
     }
 
     const resultData = await response.json();
@@ -43,11 +49,8 @@ export const login = async (
       error: "Unexpected response from the server",
     };
   } catch (error) {
-    console.log(error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
+    console.error("Error in login action:", error);
+    throw error;
   }
 };
 

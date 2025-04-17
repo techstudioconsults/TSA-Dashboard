@@ -18,9 +18,16 @@ import { useForm } from "react-hook-form";
 import { signInFormData, signInSchema } from "~/schemas";
 import { useAuthStore } from "~/stores/authStore";
 
+interface ApiError {
+  status?: number;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
 const LoginForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const login = useAuthStore((state) => state.login);
 
@@ -47,8 +54,12 @@ const LoginForm: FC = () => {
       await login(data.email, data.password);
       reset();
       router.push("/");
-    } catch (error) {
-      console.error("Login failed:", error);
+    } catch (error: unknown) {
+      const error_ = error as ApiError;
+      // console.log("Login error:", error);
+      if (error_?.message) {
+        setFormError(error_.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -67,6 +78,7 @@ const LoginForm: FC = () => {
         </div>
 
         <Form {...formMethods}>
+          {formError && <p className="text-red-500">{formError}</p>}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Email */}
             <FormField
